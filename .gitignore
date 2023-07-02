@@ -1,0 +1,11 @@
+# Premake
+premake/*
+!premake5.lua
+build
+
+# Visual Studio
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
