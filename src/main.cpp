@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "linmath.h"
+#include "libs/linmath.h"
 
 //#include "SOIL2.h"
 

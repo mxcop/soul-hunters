@@ -1,9 +1,9 @@
-#include "SpriteRenderer.h"
+#include "sprite-renderer.h"
 
 SpriteRenderer::SpriteRenderer(Shader& shader)
 {
 	this->shader = shader;
-	this->initRenderData();
+	this->init_renderdata();
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -11,30 +11,35 @@ SpriteRenderer::~SpriteRenderer()
 	glDeleteVertexArrays(1, &this->quadVAO);
 }
 
-void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color)
+void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color)
 {
-	this->shader.Use();
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(postion, 0.0f));
+	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 
+	// Move the model to it's world position.
+	model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+
+	// Rotate the model around it's center point. (hard coded center pivot)
 	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
 	model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
+	// Scale the model.
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
-	this->shader.SetMatrix4("model", model);
-	this->shader.SetVector3f("spriteColor", color);
+	// Set the uniforms within the shader:
+	this->shader.set_mat4("model", model);
+	this->shader.set_vec3f("spriteColor", color);
+	this->shader.use();
 
 	glActiveTexture(GL_TEXTURE0);
-	texture.Bind();
+	texture.bind();
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 }
 
-void SpriteRenderer::initRenderData()
+void SpriteRenderer::init_renderdata()
 {
 	// Configure VAO/VBO
 	unsigned int VBO;
