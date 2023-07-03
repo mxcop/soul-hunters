@@ -24,14 +24,18 @@ project "Game"
     targetdir "../build/bin/%{cfg.buildcfg}"
     objdir "../build/obj/%{cfg.buildcfg}"
 
+    -- Include directories containing only '.h' files.
     includedirs {
+        "../include/",
         "../vendor/glfw/include/",
         "../vendor/glad/include/",
         "../vendor/glm/",
     }
     
+    -- Project source files. (.cpp & .h)
     files { "../src/*.cpp", "../src/*.h", "../src/**/*.cpp", "../src/**/*.h" }
 
+    -- Library links.
     links { 
         "GLFW",
         "GLAD",
@@ -46,6 +50,7 @@ project "Game"
     filter "system:windows"
         defines { "_WINDOWS" }
 
+    -- Library includes.
     include "../vendor/glfw.lua"
     include "../vendor/glad.lua"
     include "../vendor/glm.lua"
