@@ -28,6 +28,7 @@ project "Game"
         "../vendor/glfw/include/",
         "../vendor/glad/include/",
         "../vendor/glm/",
+        "../vendor/SOIL2/",
     }
     
     files { "../src/*.cpp", "../src/*.h" }
@@ -36,6 +37,7 @@ project "Game"
         "GLFW",
         "GLAD",
         "GLM",
+        "soil2-static-lib",
     }
 
     filter "system:linux"
@@ -49,3 +51,4 @@ project "Game"
     include "../vendor/glfw.lua"
     include "../vendor/glad.lua"
     include "../vendor/glm.lua"
+    include "../vendor/SOIL2/premake5.lua"
