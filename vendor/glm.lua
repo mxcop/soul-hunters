@@ -3,8 +3,8 @@ project "GLM"
 	language "C"
 	architecture "x86_64"
 
-	targetdir "../bin/%{cfg.buildcfg}"
-	objdir "../obj/%{cfg.buildcfg}"
+	targetdir "../build/bin/glm/%{cfg.buildcfg}"
+	objdir "../build/obj/glm/%{cfg.buildcfg}"
 	
 	includedirs { "glm/" }
 

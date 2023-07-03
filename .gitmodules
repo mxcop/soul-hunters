@@ -4,6 +4,6 @@
 [submodule "vendor/glm"]
 	path = vendor/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "vendor/SOIL2"]
-	path = vendor/SOIL2
-	url = https://github.com/SpartanJ/SOIL2.git
+[submodule "vendor/soil"]
+	path = vendor/soil
+	url = https://github.com/littlstar/soil.git
