@@ -30,7 +30,7 @@ project "Game"
         "../vendor/glm/",
     }
     
-    files { "../src/*.cpp", "../src/*.h" }
+    files { "../src/*.cpp", "../src/*.h", "../src/**/*.cpp", "../src/**/*.h" }
 
     links { 
         "GLFW",
