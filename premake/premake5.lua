@@ -27,6 +27,7 @@ project "Game"
     includedirs {
         "../vendor/glfw/include/",
         "../vendor/glad/include/",
+        "../vendor/glm/",
     }
     
     files { "../src/*.cpp", "../src/*.h" }
@@ -34,6 +35,7 @@ project "Game"
     links { 
         "GLFW",
         "GLAD",
+        "GLM",
     }
 
     filter "system:linux"
@@ -46,3 +48,4 @@ project "Game"
 
     include "../vendor/glfw.lua"
     include "../vendor/glad.lua"
+    include "../vendor/glm.lua"
