@@ -18,7 +18,7 @@ project "Game"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
-	architecture "x86_64"
+    architecture "x86_64"
 
     location ".."
     targetdir "../build/bin/%{cfg.buildcfg}"
@@ -43,11 +43,13 @@ project "Game"
     }
 
     filter "system:linux"
-        links { "dl", "pthread" }
+        links { "dl", "pthread", "GL", "X11" }
 
         defines { "_X11" }
 
     filter "system:windows"
+        links { "OpenGL32" } -- OpenGL
+
         defines { "_WINDOWS" }
 
     -- Library includes.

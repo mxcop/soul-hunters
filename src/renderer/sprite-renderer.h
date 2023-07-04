@@ -20,12 +20,3 @@ private:
 
 	void init_renderdata();
 };
-
-class Class {
-	int id;
-};
-struct Struct {};
-
-void my_func(int func_arg) {
-	bool is_enabled = true;
-};

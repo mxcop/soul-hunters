@@ -5,7 +5,7 @@
 #endif
 
 #include <glad/glad.h>
-#include <gl/GL.h>
+#include <GL/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
