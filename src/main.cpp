@@ -14,8 +14,6 @@
 
 #include "linmath.h"
 
-//#include "SOIL2.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -65,9 +63,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main(void) {
 	puts("Hello, world!");
-
-	// Creating 2D Projection Matrix
-	glm::mat4 projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
 
 	GLFWwindow* window;
 	GLuint vertex_buffer, vertex_shader, fragment_shader, program;
