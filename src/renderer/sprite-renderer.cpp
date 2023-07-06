@@ -24,7 +24,7 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
 	// Scale the model.
-	model = glm::scale(model, glm::vec3(size, 1.0f));
+	//model = glm::scale(model, glm::vec3(size, 1.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.set_mat4("model", model);
@@ -44,7 +44,7 @@ void SpriteRenderer::init_renderdata()
 	// Configure VAO/VBO
 	unsigned int VBO;
 	float vertices[] = {
-		// pos		// tex
+		// pos      // tex
 		0.0f, 1.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 0.0f,
@@ -61,8 +61,15 @@ void SpriteRenderer::init_renderdata()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(this->quadVAO);
+
+	// Pos atrribute
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+	// Tex attribute
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }

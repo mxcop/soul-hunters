@@ -100,6 +100,9 @@ Texture2D ResourceManager::load_texture_from_file(const char* file, bool alpha)
     // load image
     int width, height, nr_channels;
     unsigned char* data = stbi_load(file, &width, &height, &nr_channels, 0);
+
+    stbi_failure_reason();
+
     // now generate texture
     texture.generate(width, height, data);
     // and finally free image data
