@@ -66,8 +66,8 @@ void SpriteRenderer::init_renderdata()
 
 	GLuint indices[] =
 	{
-		2, 3, 0,
 		0, 1, 2,
+		2, 3, 0
 	};
 
 	// Upload the indices (elements) to the buffer
