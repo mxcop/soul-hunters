@@ -26,7 +26,7 @@ void Game::Init()
 	#include "../src/shaders/sprite.frag"
 	;
 
-	std::filesystem::path p = "/awesomeface.png";
+	std::filesystem::path p = "./src/textures/awesomeface.png";
 	std::filesystem::path ap = std::filesystem::absolute(p);
 
 	std::string ap_str = ap.string();
@@ -44,7 +44,7 @@ void Game::Init()
 	renderer = new SpriteRenderer(ResourceManager::get_shader("sprite"));
 
 	// Load texture
-	ResourceManager::load_texture("C:/Users/gikst/Documents/Programming/premake-game/src/textures/awesomeface.png", true, "bor");
+	ResourceManager::load_texture(ap_str_const, true, "bor");
 
 	glUniform1i(glGetUniformLocation(ResourceManager::get_shader("sprite").id, "sprite"), 0); // GL_TEXTURE0
 	glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
