@@ -36,7 +36,7 @@ void Game::Init()
 	ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "sprite");
 
 	// Set up shaders
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width), static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width), static_cast<float>(this->height), 0.0f, 0.0f, 1000.0f);
 	ResourceManager::get_shader("sprite").use().set_int("img", 0);
 	ResourceManager::get_shader("sprite").set_mat4("projection", projection);
 
