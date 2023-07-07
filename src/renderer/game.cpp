@@ -45,6 +45,9 @@ void Game::Init()
 
 	// Load texture
 	ResourceManager::load_texture("C:/Users/gikst/Documents/Programming/premake-game/src/textures/awesomeface.png", true, "bor");
+
+	glUniform1i(glGetUniformLocation(ResourceManager::get_shader("sprite").id, "sprite"), 0); // GL_TEXTURE0
+	glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
 }
 
 void Game::ProcessInput(float dt)
@@ -57,5 +60,5 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	renderer->draw_sprite(ResourceManager::get_texture("bor"), glm::vec2(200.0f, 200.0f), glm::vec2(30.0f, 40.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	renderer->draw_sprite(ResourceManager::get_texture("bor"), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 }

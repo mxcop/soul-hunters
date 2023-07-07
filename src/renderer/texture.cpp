@@ -16,9 +16,10 @@ void Texture2D::generate(unsigned int width, unsigned int height, unsigned char*
     this->width = width;
     this->height = height;
 
+    glActiveTexture(GL_TEXTURE0 + 0); // TODO: index parameter
+
     // Create the texture:
     glBindTexture(GL_TEXTURE_2D, this->id);
-    glTexImage2D(GL_TEXTURE_2D, 0, this->int_fmt, width, height, 0, this->img_fmt, GL_UNSIGNED_BYTE, data);
 
     // Set the wrap and filter modes:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->wrap_s);
@@ -26,8 +27,10 @@ void Texture2D::generate(unsigned int width, unsigned int height, unsigned char*
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->filter_min);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->filter_max);
 
+    glTexImage2D(GL_TEXTURE_2D, 0, this->int_fmt, width, height, 0, this->img_fmt, GL_UNSIGNED_BYTE, data);
+
     // Unbind the texture.
-    glBindTexture(GL_TEXTURE_2D, 0);
+    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture2D::bind() const

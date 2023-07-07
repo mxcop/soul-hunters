@@ -8,7 +8,9 @@ SpriteRenderer::SpriteRenderer(Shader& shader)
 
 SpriteRenderer::~SpriteRenderer()
 {
-	glDeleteVertexArrays(1, &this->quadVAO);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
+	glDeleteVertexArrays(1, &vao);
 }
 
 void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color)
@@ -34,42 +36,49 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	glActiveTexture(GL_TEXTURE0);
 	texture.bind();
 
-	glBindVertexArray(this->quadVAO);
+	//glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }
 
 void SpriteRenderer::init_renderdata()
 {
-	// Configure VAO/VBO
-	unsigned int VBO;
-	float vertices[] = {
-		// pos      // tex
-		0.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f,
+	// Init objects
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glGenBuffers(1, &vbo);
 
-		0.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 0.0f
+	float vertices[] =
+	{
+		// x   y      u     v
+		-0.5f, 0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, 1.0f
 	};
 
-	glGenVertexArrays(1, &this->quadVAO);
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// Upload the vertices to the buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindVertexArray(this->quadVAO);
+	// Init more objects
+	glGenBuffers(1, &ebo);
+
+	GLuint indices[] =
+	{
+		2, 3, 0,
+		0, 1, 2,
+	};
+
+	// Upload the indices (elements) to the buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Pos atrribute
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 
 	// Tex attribute
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(GLfloat)));
 }

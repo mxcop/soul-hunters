@@ -16,7 +16,10 @@ public:
 		glm::vec3 color = glm::vec3(1.0f));
 private:
 	Shader shader;
-	unsigned int quadVAO;
+	// GLuint quadVAO;
+	GLuint vao;
+	GLuint vbo;
+	GLuint ebo;
 
 	void init_renderdata();
 };
