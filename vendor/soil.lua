@@ -4,7 +4,9 @@ project "SOIL"
     targetdir "../build/bin/soil/%{cfg.buildcfg}"
 	objdir "../build/obj/soil/%{cfg.buildcfg}"
 
-    files { "soil/src/SOIL2/*.c" }
+    includedirs { "soil/include/" }
+
+    files { "soil/src/*.c" }
 
     filter "action:vs*"
         buildoptions { "/TP" }
@@ -17,12 +19,12 @@ project "SOIL"
     filter "configurations:debug"
         defines { "DEBUG" }
         symbols "On"
-        targetname "soil2-debug"
+        targetname "soil-debug"
 
     filter "configurations:release"
         defines { "NDEBUG" }
         optimize "On"
-        targetname "soil2"
+        targetname "soil"
 
     filter "system:macosx"
         defines { "GL_SILENCE_DEPRECATION" }
