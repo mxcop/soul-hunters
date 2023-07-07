@@ -95,6 +95,7 @@ void Game::ProcessInput(int key, int action)
 }
 
 float speed = 400.0f;
+float rotation = 0;
 
 void Game::Update(float dt)
 {
@@ -102,6 +103,9 @@ void Game::Update(float dt)
 	if (down) pos.y -= speed * dt;
 	if (left) pos.x -= speed * dt;
 	if (right) pos.x += speed * dt;
+
+	rotation += dt * 45.0f;
+	if (rotation > 360.0f) rotation = 0.0f;
 }
 
 void Game::Render()
@@ -110,7 +114,7 @@ void Game::Render()
 		ResourceManager::get_texture("bor"), 
 		pos, 
 		glm::vec2(100.0f, 100.0f), 
-		0.0f, 
+		rotation,
 		glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 }
