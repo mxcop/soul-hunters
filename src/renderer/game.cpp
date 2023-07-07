@@ -36,7 +36,7 @@ void Game::Init()
 	ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "sprite");
 
 	// Set up shaders
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width), static_cast<float>(this->height), 0.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
 	ResourceManager::get_shader("sprite").use().set_int("img", 0);
 	ResourceManager::get_shader("sprite").set_mat4("projection", projection);
 
@@ -50,15 +50,67 @@ void Game::Init()
 	glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
 }
 
-void Game::ProcessInput(float dt)
+bool up = false;
+bool down = false;
+bool left = false;
+bool right = false;
+
+void Game::ProcessInput(int key, int action)
 {
+	if (key == GLFW_KEY_W) {
+		if (action == GLFW_PRESS) {
+			up = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			up = false;
+		}
+	}
+
+	if (key == GLFW_KEY_S) {
+		if (action == GLFW_PRESS) {
+			down = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			down = false;
+		}
+	}
+
+	if (key == GLFW_KEY_A) {
+		if (action == GLFW_PRESS) {
+			left = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			left = false;
+		}
+	}
+
+	if (key == GLFW_KEY_D) {
+		if (action == GLFW_PRESS) {
+			right = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			right = false;
+		}
+	}
 }
+
+float speed = 400.0f;
 
 void Game::Update(float dt)
 {
+	if (up) pos.y += speed * dt;
+	if (down) pos.y -= speed * dt;
+	if (left) pos.x -= speed * dt;
+	if (right) pos.x += speed * dt;
 }
 
 void Game::Render()
 {
-	renderer->draw_sprite(ResourceManager::get_texture("bor"), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	renderer->draw_sprite(
+		ResourceManager::get_texture("bor"), 
+		pos, 
+		glm::vec2(100.0f, 100.0f), 
+		0.0f, 
+		glm::vec3(1.0f, 1.0f, 1.0f)
+	);
 }

@@ -175,9 +175,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // The Width of the screen
-const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_WIDTH = 1920;
 // The height of the screen
-const unsigned int SCREEN_HEIGHT = 600;
+const unsigned int SCREEN_HEIGHT = 1080;
 
 Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -230,10 +230,6 @@ int main(int argc, char* argv[])
         lastFrame = currentFrame;
         glfwPollEvents();
 
-        // manage user input
-        // -----------------
-        Breakout.ProcessInput(deltaTime);
-
         // update game state
         // -----------------
         Breakout.Update(deltaTime);
@@ -257,6 +253,8 @@ int main(int argc, char* argv[])
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
+    Breakout.ProcessInput(key, action);
+
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);

@@ -18,15 +18,15 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 
 	// Move the model to it's world position.
-	model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+	model = glm::translate(model, glm::vec3(position, 0.0f));
 
 	// Rotate the model around it's center point. (hard coded center pivot)
-	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-	model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+	// model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+	// model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+	// model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
 	// Scale the model.
-	//model = glm::scale(model, glm::vec3(size, 1.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.set_mat4("model", model);
@@ -37,7 +37,7 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	texture.bind();
 
 	//glBindVertexArray(this->quadVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	//glBindVertexArray(0);
 }
 
