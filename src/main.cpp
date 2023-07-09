@@ -15,6 +15,8 @@ const unsigned int SCREEN_WIDTH = 1920;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 1080;
 
+const float TARGET_FPS = 60.0f;
+
 Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(int argc, char* argv[])
@@ -56,6 +58,7 @@ int main(int argc, char* argv[])
     // -------------------
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+    float frameCounter = 0.0f;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -70,13 +73,19 @@ int main(int argc, char* argv[])
         // -----------------
         Breakout.Update(deltaTime);
 
-        // render
-        // ------
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        Breakout.Render();
+        if (frameCounter >= (1.0 / TARGET_FPS)) {
+            frameCounter = 0;
 
-        glfwSwapBuffers(window);
+            // render
+            // ------
+            glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            Breakout.Render();
+
+            glfwSwapBuffers(window);
+        }
+
+        frameCounter += deltaTime;
     }
 
     // delete all resources as loaded using the resource manager
