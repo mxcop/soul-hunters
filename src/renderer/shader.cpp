@@ -77,7 +77,7 @@ bool Shader::log_err(unsigned int shader_id, std::string type) const
     }
     else
     {
-        glGetProgramiv(shader_id, GL_LINK_STATUS, &success);
+        glGetShaderiv(shader_id, GL_LINK_STATUS, &success);
         if (!success)
         {
             glGetProgramInfoLog(shader_id, 1024, NULL, info_log);

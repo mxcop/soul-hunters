@@ -12,11 +12,24 @@ public:
 	SpriteRenderer(Shader& shader);
 	~SpriteRenderer();
 
+	/// <summary>
+	/// Draw the Sprite on the screen
+	/// </summary>
+	/// <param name="texture">- The texture of the Sprite</param>
+	/// <param name="position">- The position where the Sprite will be drawn</param>
+	/// <param name="size">- The size of the drawn Sprite</param>
+	/// <param name="rotate">- The rotation value</param>
+	/// <param name="color">- The color value</param>
 	void draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size = glm::vec2(10.0f, 10.0f), float rotate = 0.0f,
 		glm::vec3 color = glm::vec3(1.0f));
 private:
 	Shader shader;
-	unsigned int quadVAO;
+	GLuint vao;
+	GLuint vbo;
+	GLuint ebo;
 
+	/// <summary>
+	/// Initialises the vao, vbo and ebo of the Sprite to be rendered
+	/// </summary>
 	void init_renderdata();
 };

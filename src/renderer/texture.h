@@ -25,13 +25,13 @@ public:
     /// <summary>
     /// Generate a texture from image data.
     /// </summary>
-    /// <param name="width">Width of the image in pixels.</param>
-    /// <param name="height">Height of the image in pixels.</param>
-    /// <param name="data">The image data. (RGB)</param>
+    /// <param name="width">- Width of the image in pixels</param>
+    /// <param name="height">- Height of the image in pixels</param>
+    /// <param name="data">- The image data (RGB)</param>
     void generate(unsigned int width, unsigned int height, unsigned char* data);
 
     /// <summary>
-    /// Bind texture as active GL_TEXTURE_2D object.
+    /// Bind texture as active GL_TEXTURE_2D object
     /// </summary>
     void bind() const;
 };

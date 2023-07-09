@@ -20,12 +20,12 @@ public:
     Shader& use();
 
     /// <summary>
-    /// Compile the given source files into a shader program.
+    /// Compile the given source files into a shader program
     /// </summary>
-    /// <param name="vert_src">The vertex shader source.</param>
-    /// <param name="frag_src">The fragment shader source.</param>
-    /// <param name="geo_src">The geometry shader source. (Optional)</param>
-    /// <returns>False if an error has occured.</returns>
+    /// <param name="vert_src">- The vertex shader source</param>
+    /// <param name="frag_src">- The fragment shader source</param>
+    /// <param name="geo_src">- The geometry shader source (Optional)</param>
+    /// <returns>False if an error has occured</returns>
     bool compile(const char* vert_src, const char* frag_src, const char* geo_src = nullptr);
 
     // Uniform utility functions:
@@ -41,10 +41,10 @@ public:
 
 private:
     /// <summary>
-    /// Log any compiler / linker errors if any occured.
+    /// Log any compiler / linker errors if any occured
     /// </summary>
-    /// <param name="shader_id">ID of the shader to log.</param>
-    /// <param name="type">The type of the shader to log.</param>
-    /// <returns>False if an error has occured.</returns>
+    /// <param name="shader_id">- ID of the shader to log</param>
+    /// <param name="type">- The type of the shader to log</param>
+    /// <returns>False if an error has occured</returns>
     bool log_err(unsigned int shader_id, std::string type) const;
 };

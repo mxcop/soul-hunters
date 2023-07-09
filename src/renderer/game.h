@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 // Might want to add more depending on what we want later on
 enum GameState 
@@ -30,19 +31,23 @@ public:
 	void Init();
 
 	/// <summary>
-	/// Process user input through keys array
+	/// Process the input from the player
 	/// </summary>
-	/// <param name="dt">delta time</param>
-	void ProcessInput(float dt);
+	/// <param name="key">- Key pressed</param>
+	/// <param name="action">- Action performed by player</param>
+	void ProcessInput(int key, int action);
 
 	/// <summary>
 	/// Update game events
 	/// </summary>
-	/// <param name="dt">delta time</param>
+	/// <param name="dt">- delta time</param>
 	void Update(float dt);
 	
 	/// <summary>
 	/// Render the game
 	/// </summary>
 	void Render();
+
+private:
+	glm::vec2 pos = { 0.0, 0.0 };
 };
