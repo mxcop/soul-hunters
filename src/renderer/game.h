@@ -31,14 +31,16 @@ public:
 	void Init();
 
 	/// <summary>
-	/// Process user input through keys array
+	/// Process the input from the player
 	/// </summary>
+	/// <param name="key">- Key pressed</param>
+	/// <param name="action">- Action performed by player</param>
 	void ProcessInput(int key, int action);
 
 	/// <summary>
 	/// Update game events
 	/// </summary>
-	/// <param name="dt">delta time</param>
+	/// <param name="dt">- delta time</param>
 	void Update(float dt);
 	
 	/// <summary>
