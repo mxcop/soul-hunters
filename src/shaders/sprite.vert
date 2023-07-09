@@ -9,7 +9,6 @@ uniform mat4 projection;
 
 void main()
 {
-	fTexcoord = texcoord;
-    // gl_Position = projection * model * vec4(position, 0.0, 1.0);
+	fTexcoord = texcoord / 5.0f + 1.0f / 5.0f;
 	gl_Position = projection * model * vec4(position, 0.0, 1.0);
 })"

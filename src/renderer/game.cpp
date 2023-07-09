@@ -26,7 +26,7 @@ void Game::Init()
 	#include "../src/shaders/sprite.frag"
 	;
 
-	std::filesystem::path p = "./src/textures/awesomeface.png";
+	std::filesystem::path p = "./public/test-tileset.png";
 	std::filesystem::path ap = std::filesystem::absolute(p);
 
 	std::string ap_str = ap.string();
