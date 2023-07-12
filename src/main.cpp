@@ -17,7 +17,7 @@ const unsigned int SCREEN_HEIGHT = 1080;
 
 const float TARGET_FPS = 60.0f;
 
-Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+Game* game = nullptr;
 
 int main(int argc, char* argv[])
 {
@@ -50,9 +50,11 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT);
+
     // initialize game
     // ---------------
-    Breakout.Init();
+    game->Init();
 
     // deltaTime variables
     // -------------------
@@ -71,16 +73,17 @@ int main(int argc, char* argv[])
 
         // update game state
         // -----------------
-        Breakout.Update(deltaTime);
+        game->Update(deltaTime);
 
-        if (frameCounter >= (1.0 / TARGET_FPS)) {
+        if (frameCounter >= (1.0 / TARGET_FPS)) 
+        {
             frameCounter = 0;
 
             // render
             // ------
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            Breakout.Render();
+            game->Render();
 
             glfwSwapBuffers(window);
         }
@@ -98,7 +101,7 @@ int main(int argc, char* argv[])
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    Breakout.ProcessInput(key, action);
+    game->ProcessInput(key, action);
 
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -106,9 +109,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-            Breakout.keys[key] = true;
+            game->keys[key] = true;
         else if (action == GLFW_RELEASE)
-            Breakout.keys[key] = false;
+            game->keys[key] = false;
     }
 }
 

@@ -17,4 +17,3 @@ private:
 
 	glm::vec2 texture_coords[4];
 };
-
