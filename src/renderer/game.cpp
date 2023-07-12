@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include "LDtkLoader/Project.hpp"
+#include "tilemap.h"
 
 #include <stdlib.h>
 
@@ -24,6 +25,20 @@ void Game::Init()
 {
 	SpriteRenderer::setup("sprite");
 
+	ldtk::Project ldtk_project;
+	ldtk_project.loadFromFile("./public/test.ldtk");
+
+	// get the world
+	const auto& world = ldtk_project.getWorld();
+
+	// get the level and the layer we want to render
+	const auto& level = world.getLevel("Level_0");
+	const auto& layer = level.getLayer("Background");
+	// get all the tiles in the Ground layer
+	const auto& tiles_vector = layer.allTiles();
+
+	Tilemap background = Tilemap(tiles_vector, 256, 256);
+
 	// Set up projection matrix
 	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
 
@@ -32,7 +47,6 @@ void Game::Init()
 	
 	// Load texture
 	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
-
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 }
 
