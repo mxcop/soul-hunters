@@ -6,7 +6,7 @@ Texture2D::Texture2D() :
     width(0), height(0), 
     int_fmt(GL_RGB), img_fmt(GL_RGB), 
     wrap_s(GL_REPEAT), wrap_t(GL_REPEAT), 
-    filter_min(GL_LINEAR), filter_max(GL_LINEAR)
+    filter_min(GL_NEAREST), filter_max(GL_NEAREST)
 {
     glGenTextures(1, &this->id);
 }

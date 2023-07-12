@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "sprite-renderer.h"
+
 // Might want to add more depending on what we want later on
 enum GameState 
 {
@@ -18,12 +20,11 @@ public:
 	// Game state
 	GameState state;
 	
-	bool keys[1024];
-	unsigned int width, height;
+	bool keys[1024] = {0};
+	int width, height;
 
 	// Constructor/Destructor
-	Game(unsigned int width, unsigned int height);
-	~Game();
+	Game(int width, int height);
 
 	/// <summary>
 	/// Initialize game state (load shaders/textures)
@@ -49,5 +50,7 @@ public:
 	void Render();
 
 private:
+	SpriteRenderer renderer;
+
 	glm::vec2 pos = { 0.0, 0.0 };
 };

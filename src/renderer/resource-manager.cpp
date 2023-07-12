@@ -12,9 +12,9 @@ std::map<std::string, Texture2D> ResourceManager::textures;
 std::map<std::string, Shader> ResourceManager::shaders;
 
 
-Shader ResourceManager::load_shader(const char* v_shader_file, const char* f_shader_file, const char* g_shader_file, std::string name)
+Shader ResourceManager::load_shader(const char* v_shader_code, const char* f_shader_code, const char* g_shader_code, std::string name)
 {
-    shaders[name] = load_shader_from_file(v_shader_file, f_shader_file, g_shader_file);
+    shaders[name] = load_shader_from_file(v_shader_code, f_shader_code, g_shader_code);
     return shaders[name];
 }
 
@@ -44,47 +44,11 @@ void ResourceManager::clear()
         glDeleteTextures(1, &iter.second.id);
 }
 
-Shader ResourceManager::load_shader_from_file(const char* v_shader_file, const char* f_shader_file, const char* g_shader_file)
+Shader ResourceManager::load_shader_from_file(const char* v_shader_code, const char* f_shader_code, const char* g_shader_code)
 {
-    // 1. retrieve the vertex/fragment source code from filePath
-    //std::string vertex_code;
-    //std::string fragment_code;
-    //std::string geometry_code;
-    //try
-    //{
-    //    // open files
-    //    std::ifstream vertex_shader_file(v_shader_file);
-    //    std::ifstream fragment_shader_file(f_shader_file);
-    //    std::stringstream v_shader_stream, f_shader_stream;
-    //    // read file's buffer contents into streams
-    //    v_shader_stream << vertex_shader_file.rdbuf();
-    //    f_shader_stream << fragment_shader_file.rdbuf();
-    //    // close file handlers
-    //    vertex_shader_file.close();
-    //    fragment_shader_file.close();
-    //    // convert stream into string
-    //    vertex_code = v_shader_stream.str();
-    //    fragment_code = f_shader_stream.str();
-    //    // if geometry shader path is present, also load a geometry shader
-    //    if (g_shader_file != nullptr)
-    //    {
-    //        std::ifstream geometry_shader_file(g_shader_file);
-    //        std::stringstream g_shader_stream;
-    //        g_shader_stream << geometry_shader_file.rdbuf();
-    //        geometry_shader_file.close();
-    //        geometry_code = g_shader_stream.str();
-    //    }
-    //}
-    //catch (std::exception e)
-    //{
-    //    std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
-    //}
-    const char* v_shader_code = v_shader_file;
-    const char* f_shader_code = f_shader_file;
-    const char* g_shader_code = g_shader_file;
-    // 2. now create shader object from source code
+    // Now create shader object from source code
     Shader shader;
-    assert(shader.compile(v_shader_code, f_shader_code, g_shader_file != nullptr ? g_shader_code : nullptr));
+    assert(shader.compile(v_shader_code, f_shader_code, g_shader_code != nullptr ? g_shader_code : nullptr));
     return shader;
 }
 

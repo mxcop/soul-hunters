@@ -6,62 +6,34 @@
 
 #include "LDtkLoader/Project.hpp"
 
-SpriteRenderer* renderer;
+#include <stdlib.h>
 
-Game::Game(unsigned int width, unsigned int height):
-	state(GAME_ACTIVE), keys(), width(width), height(height)
+using std::filesystem::path;
+
+Game::Game(int width, int height):
+	state(GAME_ACTIVE), width(width), height(height)
 {
 }
 
-Game::~Game()
+std::string relative_path(path p)
 {
-	delete renderer;
+	return std::filesystem::absolute(p).string();
 }
 
 void Game::Init()
 {
-	ldtk::Project ldtk_project;
-	ldtk_project.loadFromFile("./public/test.ldtk");
+	SpriteRenderer::setup("sprite");
 
-	// get the world
-	const auto& world = ldtk_project.getWorld();
-
-	// get the level and the layer we want to render
-	const auto& level = world.getLevel("Level_0");
-	const auto& layer = level.getLayer("Background");
-	// get all the tiles in the Ground layer
-	const auto& tiles_vector = layer.allTiles();
-
-	const std::string vert_src = 
-	#include "../src/shaders/sprite.vert"
-	;
-
-	const std::string frag_src =
-	#include "../src/shaders/sprite.frag"
-	;
-
-	std::filesystem::path p = "./public/test/simplified/Level_0/_composite.png";
-	std::filesystem::path ap = std::filesystem::absolute(p);
-
-	std::string ap_str = ap.string();
-	const char* ap_str_const = ap_str.c_str();
-
-	// Load in shaders
-	ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "sprite");
-
-	// Set up shaders
+	// Set up projection matrix
 	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
-	ResourceManager::get_shader("sprite").use().set_int("img", 0);
-	ResourceManager::get_shader("sprite").set_mat4("projection", projection);
 
-	// Set render controls
-	renderer = new SpriteRenderer(ResourceManager::get_shader("sprite"));
-
+	// Set the projection
+	renderer.set_projection(projection, "sprite");
+	
 	// Load texture
-	ResourceManager::load_texture(ap_str_const, true, "bor");
+	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
 
-	glUniform1i(glGetUniformLocation(ResourceManager::get_shader("sprite").id, "sprite"), 0); // GL_TEXTURE0
-	glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
+	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 }
 
 bool up = false;
@@ -124,11 +96,9 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	renderer->draw_sprite(
-		ResourceManager::get_texture("bor"), 
-		pos,
-		glm::vec2(1920.0f, 1080.0f),
-		rotation,
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	);
+		renderer.draw_sprite(
+		ResourceManager::get_texture("bor"),
+		{ rand() % width - width / 2, rand() % height - height / 2 },
+		glm::vec2(600.0f, 200.0f),
+		rotation);
 }
