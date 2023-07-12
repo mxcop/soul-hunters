@@ -1,5 +1,5 @@
 #include "tilemap.h"
-#include "resource-manager.h"
+#include "../resource-manager.h"
 
 Shader Tilemap::shader;
 
@@ -25,11 +25,11 @@ Tilemap::~Tilemap()
 void Tilemap::Setup()
 {
 	const std::string vert_src =
-	#include "../src/shaders/tilemap.vert"
+	#include "../shaders/tilemap.vert"
 	;
 
 	const std::string frag_src =
-	#include "../src/shaders/tilemap.frag"
+	#include "../shaders/tilemap.frag"
 	;
 
 	/* Load the tilemap shader program and save it */

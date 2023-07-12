@@ -5,8 +5,8 @@
 
 #include <glad/glad.h>
 
-#include "texture.h"
-#include "shader.h"
+#include "renderer/texture.h"
+#include "renderer/shader.h"
 
 class ResourceManager
 {

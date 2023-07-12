@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "sprite-renderer.h"
+#include "../engine/renderer/sprite-renderer.h"
 
 // Might want to add more depending on what we want later on
 enum GameState 

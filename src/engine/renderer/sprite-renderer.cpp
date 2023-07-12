@@ -47,11 +47,11 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 void SpriteRenderer::setup(std::string shader_name)
 {
 	const std::string vert_src =
-	#include "../src/shaders/sprite.vert"
+	#include "../shaders/sprite.vert"
 	;
 
 	const std::string frag_src =
-	#include "../src/shaders/sprite.frag"
+	#include "../shaders/sprite.frag"
 	;
 
 	// Load in shaders

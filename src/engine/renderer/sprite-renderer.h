@@ -5,7 +5,7 @@
 
 #include "texture.h"
 #include "shader.h"
-#include "resource-manager.h"
+#include "../resource-manager.h"
 
 class SpriteRenderer
 {

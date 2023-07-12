@@ -1,11 +1,10 @@
 #include "game.h"
-#include "resource-manager.h"
-#include "sprite-renderer.h"
+#include "../engine/resource-manager.h"
 
 #include <filesystem>
 
 #include "LDtkLoader/Project.hpp"
-#include "tilemap.h"
+#include "../engine/renderer/tilemap.h"
 
 #include <stdlib.h>
 
