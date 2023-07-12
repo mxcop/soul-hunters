@@ -110,9 +110,9 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-		renderer.draw_sprite(
-		ResourceManager::get_texture("bor"),
-		{ rand() % width - width / 2, rand() % height - height / 2 },
-		glm::vec2(600.0f, 200.0f),
-		rotation);
+	renderer.draw_sprite(
+	ResourceManager::get_texture("bor"),
+	pos,
+	glm::vec2(600.0f, 200.0f),
+	rotation);
 }
