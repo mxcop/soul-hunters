@@ -27,8 +27,8 @@ smooth out vec2 fragPosition;
 // `3`), which is the bottom-left corner of the square.
 flat out vec2 origin;
 
-uniform mat4 model;
-uniform mat4 projection;
+// uniform mat4 model;
+// uniform mat4 projection;
 
 
 void main() {
@@ -42,5 +42,5 @@ void main() {
   // being drawn
   fragPosition = position;
 
-  gl_Position = projection * model * vec4(position, 0.0, 1.0);
+  gl_Position = /* projection * model * */ vec4(position, 0.0, 1.0);
 })"

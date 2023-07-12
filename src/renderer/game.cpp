@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include "LDtkLoader/Project.hpp"
+#include "tilemap.h"
 
 SpriteRenderer* renderer;
 
@@ -31,6 +32,8 @@ void Game::Init()
 	const auto& layer = level.getLayer("Background");
 	// get all the tiles in the Ground layer
 	const auto& tiles_vector = layer.allTiles();
+
+	Tilemap background = Tilemap(tiles_vector, 256, 256);
 
 	const std::string vert_src = 
 	#include "../src/shaders/sprite.vert"
@@ -60,7 +63,7 @@ void Game::Init()
 	// Load texture
 	ResourceManager::load_texture(ap_str_const, true, "bor");
 
-	glUniform1i(glGetUniformLocation(ResourceManager::get_shader("sprite").id, "sprite"), 0); // GL_TEXTURE0
+	//glUniform1i(glGetUniformLocation(ResourceManager::get_shader("sprite").id, "sprite"), 0); // GL_TEXTURE0
 	glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
 }
 
