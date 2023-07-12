@@ -27,8 +27,9 @@ smooth out vec2 fragPosition;
 // `3`), which is the bottom-left corner of the square.
 flat out vec2 origin;
 
-// we use this for zoom (not explained here, as this isn't related to tilemap)
-uniform float zoom;
+uniform mat4 model;
+uniform mat4 projection;
+
 
 void main() {
   // this has an effect for the provoking vertex only - it will set the `origin`
@@ -41,5 +42,5 @@ void main() {
   // being drawn
   fragPosition = position;
 
-  gl_Position = vec4(position, 0.0, zoom);
+  gl_Position = projection * model * vec4(position, 0.0, 1.0);
 })"

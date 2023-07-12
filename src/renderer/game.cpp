@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+#include "LDtkLoader/Project.hpp"
+
 SpriteRenderer* renderer;
 
 Game::Game(unsigned int width, unsigned int height):
@@ -18,6 +20,18 @@ Game::~Game()
 
 void Game::Init()
 {
+	ldtk::Project ldtk_project;
+	ldtk_project.loadFromFile("./public/test.ldtk");
+
+	// get the world
+	const auto& world = ldtk_project.getWorld();
+
+	// get the level and the layer we want to render
+	const auto& level = world.getLevel("Level_0");
+	const auto& layer = level.getLayer("Background");
+	// get all the tiles in the Ground layer
+	const auto& tiles_vector = layer.allTiles();
+
 	const std::string vert_src = 
 	#include "../src/shaders/sprite.vert"
 	;
@@ -26,7 +40,7 @@ void Game::Init()
 	#include "../src/shaders/sprite.frag"
 	;
 
-	std::filesystem::path p = "./public/test-tileset.png";
+	std::filesystem::path p = "./public/test/simplified/Level_0/_composite.png";
 	std::filesystem::path ap = std::filesystem::absolute(p);
 
 	std::string ap_str = ap.string();
@@ -104,16 +118,16 @@ void Game::Update(float dt)
 	if (left) pos.x -= speed * dt;
 	if (right) pos.x += speed * dt;
 
-	rotation += dt * 45.0f;
-	if (rotation > 360.0f) rotation = 0.0f;
+	/*rotation += dt * 45.0f;
+	if (rotation > 360.0f) rotation = 0.0f;*/
 }
 
 void Game::Render()
 {
 	renderer->draw_sprite(
 		ResourceManager::get_texture("bor"), 
-		pos, 
-		glm::vec2(100.0f, 100.0f), 
+		pos,
+		glm::vec2(1920.0f, 1080.0f),
 		rotation,
 		glm::vec3(1.0f, 1.0f, 1.0f)
 	);

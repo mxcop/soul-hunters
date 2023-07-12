@@ -10,20 +10,17 @@ out vec4 color;
 
 // the `tilemap` - this is the image that holds the images of the tiles we're
 // drawing
-uniform sampler2D tilemap;
+uniform sampler2D tileset;
 
 // the `indices` worldmap - this is an image, where every pixel corresponds to a
 // position in the tilemap. by doing so, we can store world data
 uniform sampler2D indices;
 
-void main() {
-  // our `tilemap` is a 2x2 tilemap
-  vec2 tileSize = vec2(2.0, 2.0);
+uniform vec2 mapSize;
 
-  // the size of our map is `1000` by `1000`. we could easily make this bigger
-  // or smaller to effectively downsample the map, because of how the math below
-  // works out
-  vec2 mapSize = vec2(1000.0, 1000.0);
+void main() {
+  // our `tileset` is a 2x2 tilemap
+  vec2 tileSize = vec2(10.0, 10.0);
 
   // first, get the relative position
   //
@@ -194,5 +191,5 @@ void main() {
   //  0           0
   //
   // and thus, we sample the texture!
-  color = texture(tilemap, (index + offset) / tileSize);
+  color = texture(tileset, (index + offset) / tileSize);
 })"
