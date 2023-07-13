@@ -54,7 +54,7 @@ bool down = false;
 bool left = false;
 bool right = false;
 
-void Game::ProcessInput(int key, int action)
+void Game::ProcessKeyInput(int key, int action)
 {
 	if (key == GLFW_KEY_W) {
 		if (action == GLFW_PRESS) {
@@ -91,6 +91,18 @@ void Game::ProcessInput(int key, int action)
 			right = false;
 		}
 	}
+}
+
+void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
+{
+	// axes[0]: Left Stick X Axis
+	// axes[1]: Left Stick Y Axis
+	// axes[2]: Right Stick X Axis
+	// axes[3]: Right Stick Y Axis
+	// axes[4]: Left Trigger/L2
+	// axes[5]: Right Trigger/R2
+
+	std::cout << "TEST TEST";
 }
 
 float speed = 400.0f;

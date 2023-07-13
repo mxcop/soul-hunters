@@ -9,6 +9,7 @@
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void joystick_callback(int jid, int event);
 
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 1920;
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
     }
 
     glfwSetKeyCallback(window, key_callback);
+    
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
@@ -64,6 +66,8 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window))
     {
+        glfwSetJoystickCallback(joystick_callback);
+
         // calculate delta time
         // --------------------
         float currentFrame = glfwGetTime();
@@ -99,9 +103,33 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+void joystick_callback(int jid, int event)
+{
+    if (event == GLFW_CONNECTED)
+    {
+        // The joystick was connected
+        
+        // Get the state of the axes
+        int axes_count;
+        const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+
+        // Get the state of the buttons
+        int button_count;
+        const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
+
+        std::cout << "TEST TEST TEST";
+
+        game->ProcessJoystickInput(axes, buttons);
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        // The joystick was disconnected
+    }
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    game->ProcessInput(key, action);
+    game->ProcessKeyInput(key, action);
 
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
