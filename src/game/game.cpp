@@ -125,7 +125,8 @@ void Game::Update(float dt)
 	int button_count;
 	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
 
-	Game::ProcessJoystickInput(axes, buttons);
+	if (axes != nullptr && buttons != nullptr)
+		Game::ProcessJoystickInput(axes, buttons);
 
 	if (up) pos.y += speed * dt;
 	if (down) pos.y -= speed * dt;
@@ -140,7 +141,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(8.0f, 8.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),

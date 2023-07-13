@@ -1,5 +1,5 @@
 R"(#version 460 core
-in vec2 position;
+layout (location = 0) in vec2 position;
 
 smooth out vec2 frag_pos;
 flat out vec2 origin;

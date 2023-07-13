@@ -26,7 +26,7 @@ void main() {
     vec2 relative_pos = (frag_pos - origin) / quad_size;
 
     /* Sample the tiledata texture to get the relative tile index */
-    float index = floor(texture(tile_data, relative_pos).r * 255.0) - 1.0/* <- because it is incremented once on the CPU */;
+    float index = floor(texture(tile_data, relative_pos).r * 256.0) - 1.0/* <- because it is incremented once on the CPU */;
 
     /* Offset of the current tile */
     vec2 map_pos = relative_pos * map_size;

@@ -17,7 +17,7 @@ Tilemap::Tilemap(const std::vector<ldtk::Tile>& data, Texture2D tileset, uint8_t
 	for (const ldtk::Tile& tile : data)
 	{
 		ldtk::IntPoint pos = tile.getGridPosition();
-		tex_buf[((height - pos.y) * width + pos.x) * 3] = tile.tileId + 1;
+		tex_buf[((height - pos.y - 1) * width + pos.x) * 3] = tile.tileId + 1;
 	}
 
 	/* Generate the tile data texture */
@@ -40,11 +40,11 @@ void Tilemap::gl_init()
 
 	float vertices[] =
 	{
-		/*   x    */ /*    y    */ /*  uv  */
-		-half_width,  half_height, 0.0f, 0.0f,
-		 half_width,  half_height, 1.0f, 0.0f,
-		 half_width, -half_height, 1.0f, 1.0f,
-		-half_width, -half_height, 0.0f, 1.0f
+		/*   x    */ /*    y    */
+		-half_width,  half_height,
+		 half_width,  half_height,
+		 half_width, -half_height,
+		-half_width, -half_height
 	};
 
 	// Upload the vertices to the buffer
@@ -66,11 +66,7 @@ void Tilemap::gl_init()
 
 	// Pos atrribute
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-
-	// Tex attribute
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(GLfloat)));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 }
 
 Tilemap::~Tilemap()
@@ -115,7 +111,7 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	// Compute the model matrix:
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
-	model = glm::scale(model, glm::vec3(size, 1.0f));
+	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.use();
