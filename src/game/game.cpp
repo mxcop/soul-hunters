@@ -56,7 +56,7 @@ void Game::Init()
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
 
 	// Create a tilemap.
-	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, 128, 128);
+	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, 32, 32);
 }
 
 bool up = false;
@@ -140,7 +140,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	test_map->draw(glm::vec2(1736.0f, -1736.0f), glm::vec2(9.0f, 9.0f));
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
