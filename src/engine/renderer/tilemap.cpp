@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "tilemap.h"
 #include "../resource-manager.h"
 
@@ -17,7 +19,7 @@ Tilemap::Tilemap(const std::vector<ldtk::Tile>& data, Texture2D tileset, uint8_t
 	for (const ldtk::Tile& tile : data)
 	{
 		ldtk::IntPoint pos = tile.getGridPosition();
-		tex_buf[((height - pos.y - 1) * width + pos.x) * 3] = tile.tileId + 1;
+		tex_buf[(pos.y * width + pos.x) * 3] = tile.tileId + 1;
 	}
 
 	/* Generate the tile data texture */
@@ -111,7 +113,7 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	// Compute the model matrix:
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
-	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+	model = glm::scale(model, glm::vec3(size.x, -size.y, 1.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.use();
