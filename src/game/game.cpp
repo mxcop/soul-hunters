@@ -8,6 +8,8 @@
 
 #include <stdlib.h>
 
+#include "../engine/inputs.h"
+
 using std::filesystem::path;
 
 Game::Game(int width, int height):
@@ -62,7 +64,7 @@ bool down = false;
 bool left = false;
 bool right = false;
 
-void Game::ProcessInput(int key, int action)
+void Game::ProcessKeyInput(int key, int action)
 {
 	if (key == GLFW_KEY_W) {
 		if (action == GLFW_PRESS) {
@@ -101,15 +103,36 @@ void Game::ProcessInput(int key, int action)
 	}
 }
 
+glm::vec2 movement;
+
+void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
+{
+	movement.x = axes[LEFT_STICK_X];
+	movement.y = -axes[LEFT_STICK_Y];
+
+}
+
 float speed = 400.0f;
 float rotation = 0;
 
 void Game::Update(float dt)
 {
+	// Get the state of the axes
+	int axes_count;
+	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+
+	// Get the state of the buttons
+	int button_count;
+	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
+
+	Game::ProcessJoystickInput(axes, buttons);
+
 	if (up) pos.y += speed * dt;
 	if (down) pos.y -= speed * dt;
 	if (left) pos.x -= speed * dt;
 	if (right) pos.x += speed * dt;
+
+	pos += movement * dt * speed;
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/

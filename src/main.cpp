@@ -9,6 +9,10 @@
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void joystick_callback(int jid, int event);
+
+int joysticks[GLFW_JOYSTICK_LAST + 1];
+int joystick_count = 0;
 
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 1920;
@@ -42,6 +46,7 @@ int main(int argc, char* argv[])
     }
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetJoystickCallback(joystick_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
@@ -99,9 +104,30 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+void joystick_callback(int jid, int event)
+{
+    if (event == GLFW_CONNECTED)
+        joysticks[joystick_count++] = jid;
+    else if (event == GLFW_DISCONNECTED)
+    {
+        int i;
+
+        for (i = 0; i < joystick_count; i++)
+        {
+            if (joysticks[i] == jid)
+                break;
+        }
+
+        for (i = i + 1; i < joystick_count; i++)
+            joysticks[i - 1] = joysticks[i];
+
+        joystick_count--;
+    }
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    game->ProcessInput(key, action);
+    game->ProcessKeyInput(key, action);
 
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

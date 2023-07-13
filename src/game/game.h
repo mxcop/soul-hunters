@@ -33,11 +33,13 @@ public:
 	void Init();
 
 	/// <summary>
-	/// Process the input from the player
+	/// Process the input from the keyboard
 	/// </summary>
 	/// <param name="key">- Key pressed</param>
 	/// <param name="action">- Action performed by player</param>
-	void ProcessInput(int key, int action);
+	void ProcessKeyInput(int key, int action);
+
+	void ProcessJoystickInput(const float* axes, const unsigned char* buttons);
 
 	/// <summary>
 	/// Update game events
