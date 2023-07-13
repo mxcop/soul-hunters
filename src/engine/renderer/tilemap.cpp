@@ -106,17 +106,22 @@ void Tilemap::set_projection(glm::mat4 projection)
 	shader.use().set_mat4("projection", projection);
 }
 
-void Tilemap::draw()
+void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 {
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
+	// Compute the model matrix:
+	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
+
 	// Set the uniforms within the shader:
 	this->shader.use();
 	shader.set_float("tileset_size", static_cast<float>(tileset_len));
 	shader.set_vec2f("map_size", glm::vec2(width, height));
-	// this->shader.set_mat4("model", model);
+	this->shader.set_mat4("model", model);
 
 	// Bind the textures:
 	tileset  .bind(0/* GL_TEXTURE0 */);

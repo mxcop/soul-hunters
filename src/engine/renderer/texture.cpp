@@ -15,12 +15,6 @@ void Texture2D::generate(uint32_t width, uint32_t height, uint8_t* data, int tex
     this->width = width;
     this->height = height;
 
-    printf("%s\r\n", this->int_fmt == GL_RGB ? "RGB" : "RGBA");
-    for (uint32_t i = 0; i < 12; i++)
-    {
-        printf("%d: %d\r\n", i, data[i]);
-    }
-
     glActiveTexture(GL_TEXTURE0 + tex_idx); // TODO: might be irrelevant.
 
     // Create the texture:

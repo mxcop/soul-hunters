@@ -16,8 +16,12 @@ public:
 	/// </summary>
 	static void setup();
 
+	/// <summary>
+	/// Set the projection matrix of the tilemap.
+	/// </summary>
 	void set_projection(glm::mat4 projection);
-	void draw();
+
+	void draw(glm::vec2 position, glm::vec2 size);
 
 private:
 	static Shader shader;

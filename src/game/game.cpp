@@ -117,7 +117,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	test_map->draw();
+	test_map->draw(glm::vec2(1736.0f, -1736.0f), glm::vec2(9.0f, 9.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
