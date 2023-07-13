@@ -10,7 +10,7 @@ in vec2 position;
 // the linear interpolation will happen between all three fragment values. in
 // essence, this will allow the fragment shader to get the position of the
 // specific pixel it's coloring in.
-smooth out vec2 fragPosition;
+smooth out vec2 frag_pos;
 
 // the `origin` vertex
 //
@@ -28,7 +28,7 @@ smooth out vec2 fragPosition;
 flat out vec2 origin;
 
 // uniform mat4 model;
-// uniform mat4 projection;
+uniform mat4 projection;
 
 
 void main() {
@@ -40,7 +40,7 @@ void main() {
 
   // this will get linearly interpolated across the entire fragment that is
   // being drawn
-  fragPosition = position;
+  frag_pos = position;
 
-  gl_Position = /* projection * model * */ vec4(position, 0.0, 1.0);
+  gl_Position = /* projection * model * */ projection * vec4(position, 0.0, 1.0);
 })"

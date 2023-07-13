@@ -15,6 +15,13 @@ Game::Game(int width, int height):
 {
 }
 
+Tilemap* test_map;
+
+Game::~Game()
+{
+	delete test_map;
+}
+
 std::string relative_path(path p)
 {
 	return std::filesystem::absolute(p).string();
@@ -22,31 +29,32 @@ std::string relative_path(path p)
 
 void Game::Init()
 {
+	// Renderer setup functions:
 	SpriteRenderer::setup("sprite");
+	Tilemap::setup();
 
+	// Load some level data:
 	ldtk::Project ldtk_project;
 	ldtk_project.loadFromFile("./public/test.ldtk");
-
-	// get the world
 	const auto& world = ldtk_project.getWorld();
-
-	// get the level and the layer we want to render
 	const auto& level = world.getLevel("Level_0");
 	const auto& layer = level.getLayer("Background");
-	// get all the tiles in the Ground layer
 	const auto& tiles_vector = layer.allTiles();
-
-	Tilemap background = Tilemap(tiles_vector, 256, 256);
 
 	// Set up projection matrix
 	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
+	test_map->set_projection(projection);
 	
 	// Load texture
 	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
+	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
+
+	// Create a tilemap.
+	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, 128, 128);
 }
 
 bool up = false;
@@ -109,9 +117,17 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
+	test_map->draw();
+
 	renderer.draw_sprite(
-	ResourceManager::get_texture("bor"),
-	pos,
-	glm::vec2(600.0f, 200.0f),
-	rotation);
+		ResourceManager::get_texture("bor"),
+		pos,
+		glm::vec2(80.0f, 80.0f),
+		rotation);
+
+	renderer.draw_sprite(
+		ResourceManager::get_texture("tileset"),
+		pos + glm::vec2(80.0f * 5, 0),
+		glm::vec2(80.0f * 5, 80.0f),
+		rotation);
 }

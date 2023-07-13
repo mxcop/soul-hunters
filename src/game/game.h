@@ -25,6 +25,7 @@ public:
 
 	// Constructor/Destructor
 	Game(int width, int height);
+	~Game();
 
 	/// <summary>
 	/// Initialize game state (load shaders/textures)

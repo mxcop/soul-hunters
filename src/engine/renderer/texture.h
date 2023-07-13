@@ -7,31 +7,33 @@ class Texture2D
 {
 public:
     // Holds the ID of the texture object, used for all texture operations to reference to this particular texture.
-    unsigned int id;
+    uint32_t id = 0;
 
     // Texture image dimensions in pixels:
-    unsigned int width, height;
-    unsigned int int_fmt; // Internal format.
-    unsigned int img_fmt; // Image format.
+    uint32_t width = 0, height = 0;
+    uint32_t int_fmt = GL_RGB; // Internal format.
+    uint32_t img_fmt = GL_RGB; // Image format.
 
     // Texture config:
-    unsigned int wrap_s; // Wrapping mode on S axis.
-    unsigned int wrap_t; // Wrapping mode on T axis.
-    unsigned int filter_min; // Filtering mode if texture pixels < screen pixels.
-    unsigned int filter_max; // Filtering mode if texture pixels > screen pixels.
+    uint32_t wrap_s = GL_REPEAT; // Wrapping mode on S axis.
+    uint32_t wrap_t = GL_REPEAT; // Wrapping mode on T axis.
+    uint32_t filter_min = GL_NEAREST; // Filtering mode if texture pixels < screen pixels.
+    uint32_t filter_max = GL_NEAREST; // Filtering mode if texture pixels > screen pixels.
 
-    Texture2D();
+    Texture2D(uint32_t img_fmt = GL_RGB);
 
     /// <summary>
-    /// Generate a texture from image data.
+    /// Upload a texture to the GPU for drawing.
     /// </summary>
-    /// <param name="width">- Width of the image in pixels</param>
-    /// <param name="height">- Height of the image in pixels</param>
-    /// <param name="data">- The image data (RGB)</param>
-    void generate(unsigned int width, unsigned int height, unsigned char* data);
+    /// <param name="width">Width of the texture in pixels.</param>
+    /// <param name="height">Height of the texture in pixels.</param>
+    /// <param name="data">Texture data within RGB format.</param>
+    /// <param name="tex_idx">GL_TEXTURE index.</param>
+    void generate(uint32_t width, uint32_t height, uint8_t* data, int tex_idx = 0);
 
     /// <summary>
     /// Bind texture as active GL_TEXTURE_2D object
     /// </summary>
-    void bind() const;
+    /// <param name="tex_idx">GL_TEXTURE index.</param>
+    void bind(int tex_idx = 0) const;
 };

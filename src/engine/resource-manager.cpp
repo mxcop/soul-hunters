@@ -55,12 +55,8 @@ Shader ResourceManager::load_shader_from_file(const char* v_shader_code, const c
 Texture2D ResourceManager::load_texture_from_file(const char* file, bool alpha)
 {
     // create texture object
-    Texture2D texture;
-    if (alpha)
-    {
-        texture.int_fmt = GL_RGBA;
-        texture.img_fmt = GL_RGBA;
-    }
+    Texture2D texture(alpha ? GL_RGBA : GL_RGB);
+
     // load image
     int width, height, nr_channels;
     unsigned char* data = stbi_load(file, &width, &height, &nr_channels, 0);
