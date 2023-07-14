@@ -55,6 +55,21 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    GLuint fbo;
+    glGenFramebuffers(1, &fbo);
+    unsigned int tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320, 180, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
     game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // initialize game
@@ -82,6 +97,7 @@ int main(int argc, char* argv[])
 
         if (frameCounter >= (1.0 / TARGET_FPS)) 
         {
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             frameCounter = 0;
 
             // render
@@ -90,6 +106,9 @@ int main(int argc, char* argv[])
             glClear(GL_COLOR_BUFFER_BIT);
             game->Render();
 
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            glBlitFramebuffer(0, 0, 320, 180, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
             glfwSwapBuffers(window);
         }
 
