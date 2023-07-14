@@ -19,7 +19,9 @@ Tilemap::Tilemap(const std::vector<ldtk::Tile>& data, Texture2D tileset, uint8_t
 	for (const ldtk::Tile& tile : data)
 	{
 		ldtk::IntPoint pos = tile.getGridPosition();
-		tex_buf[(pos.y * width + pos.x) * 3] = tile.tileId + 1;
+		if (pos.x < width && pos.y < height) {
+			tex_buf[(pos.y * width + pos.x) * 3] = tile.tileId + 1;
+		}
 	}
 
 	/* Generate the tile data texture */
@@ -118,7 +120,7 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	// Set the uniforms within the shader:
 	this->shader.use();
 	shader.set_float("tileset_size", static_cast<float>(tileset_len));
-	shader.set_vec2f("map_size", glm::vec2(width, height));
+	shader.set_vec2f("map_size", glm::vec2(width, height) * 4.0f);
 	this->shader.set_mat4("model", model);
 
 	// Bind the textures:

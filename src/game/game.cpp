@@ -42,6 +42,7 @@ void Game::Init()
 	const auto& level = world.getLevel("Level_0");
 	const auto& layer = level.getLayer("Background");
 	const auto& tiles_vector = layer.allTiles();
+	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
 	// Set up projection matrix
 	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
@@ -56,7 +57,7 @@ void Game::Init()
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
 
 	// Create a tilemap.
-	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, 32, 32);
+	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 }
 
 bool up = false;
@@ -141,7 +142,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(8.0f, 8.0f));
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(4.0f, 4.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
