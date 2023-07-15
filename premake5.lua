@@ -1,5 +1,5 @@
 workspace "Game"
-    location ".."
+    location "."
     configurations { "Debug", "Release" }
     startproject "Game"
 
@@ -20,21 +20,21 @@ project "Game"
     cppdialect "C++17"
     architecture "x86_64"
 
-    location ".."
-    targetdir "../build/bin/%{cfg.buildcfg}"
-    objdir "../build/obj/%{cfg.buildcfg}"
+    location "."
+    targetdir "build/bin/%{cfg.buildcfg}"
+    objdir "build/obj/%{cfg.buildcfg}"
 
     -- Include directories containing only '.h' files.
     includedirs {
-        "../include/",
-        "../vendor/glfw/include/",
-        "../vendor/glad/include/",
-        "../vendor/glm/",
-        "../vendor/ldtk-loader/include/",
+        "include/",
+        "vendor/glfw/include/",
+        "vendor/glad/include/",
+        "vendor/glm/",
+        "vendor/ldtk-loader/include/",
     }
     
     -- Project source files. (.cpp & .h)
-    files { "../src/*.cpp", "../src/*.h", "../src/**/*.cpp", "../src/**/*.h" }
+    files { "src/*.cpp", "src/*.h", "src/**/*.cpp", "src/**/*.h" }
 
     -- Library links.
     links { 
@@ -55,7 +55,7 @@ project "Game"
         defines { "_WINDOWS" }
 
     -- Library includes.
-    include "../vendor/glfw.lua"
-    include "../vendor/glad.lua"
-    include "../vendor/glm.lua"
-    include "../vendor/ldtk.lua"
+    include "vendor/glfw.lua"
+    include "vendor/glad.lua"
+    include "vendor/glm.lua"
+    include "vendor/ldtk.lua"

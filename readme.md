@@ -17,17 +17,16 @@ $ git submodule update --recursive --init
 
 ### Premake
 To get started first download the premake binary from <https://premake.github.io/download/><br>
-Then add the files from the `.zip` into the `~/premake` directory within the project.
+Then add the executable file from the archive into the project root directory. *(next too `premake5.lua`)*
 
 <br>
 
 ### Generating project files
 To generate the project files run the following commands :
 ```
-$ cd premake
-
 $ premake5 vs2022
 ```
+<sup>Replace `vs2022` with `gmake2` if you're on Linux.</sup>
 
 <br>
 
