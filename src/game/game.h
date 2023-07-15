@@ -39,6 +39,11 @@ public:
 	/// <param name="action">- Action performed by player</param>
 	void ProcessKeyInput(int key, int action);
 
+	/// <summary>
+	/// Process the input from the joystick
+	/// </summary>
+	/// <param name="axes">- Axes data</param>
+	/// <param name="buttons">- Buttons data</param>
 	void ProcessJoystickInput(const float* axes, const unsigned char* buttons);
 
 	/// <summary>

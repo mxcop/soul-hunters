@@ -21,6 +21,11 @@ public:
 	/// </summary>
 	void set_projection(glm::mat4 projection);
 
+	/// <summary>
+	/// Draw the tilemap
+	/// </summary>
+	/// <param name="position">- X and Y coords</param>
+	/// <param name="size">- Size</param>
 	void draw(glm::vec2 position, glm::vec2 size);
 
 private:
