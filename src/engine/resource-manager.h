@@ -5,8 +5,8 @@
 
 #include <glad/glad.h>
 
-#include "texture.h"
-#include "shader.h"
+#include "renderer/texture.h"
+#include "renderer/shader.h"
 
 class ResourceManager
 {
@@ -62,7 +62,7 @@ private:
     /// <param name="f_shader_file">- Fragment Shader File Path</param>
     /// <param name="g_shader_file">- Geometry Shader File Path</param>
     /// <returns>Shader Object</returns>
-    static Shader load_shader_from_file(const char* v_shader_file, const char* f_shader_file, const char* g_shader_file = nullptr);
+    static Shader load_shader_from_file(const char* v_shader_code, const char* f_shader_code, const char* g_shader_code = nullptr);
 
     /// <summary>
     /// Loads a texture from a file

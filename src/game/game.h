@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "../engine/renderer/sprite-renderer.h"
+
 // Might want to add more depending on what we want later on
 enum GameState 
 {
@@ -18,11 +20,11 @@ public:
 	// Game state
 	GameState state;
 	
-	bool keys[1024];
-	unsigned int width, height;
+	bool keys[1024] = {0};
+	int width, height;
 
 	// Constructor/Destructor
-	Game(unsigned int width, unsigned int height);
+	Game(int width, int height);
 	~Game();
 
 	/// <summary>
@@ -31,11 +33,13 @@ public:
 	void Init();
 
 	/// <summary>
-	/// Process the input from the player
+	/// Process the input from the keyboard
 	/// </summary>
 	/// <param name="key">- Key pressed</param>
 	/// <param name="action">- Action performed by player</param>
-	void ProcessInput(int key, int action);
+	void ProcessKeyInput(int key, int action);
+
+	void ProcessJoystickInput(const float* axes, const unsigned char* buttons);
 
 	/// <summary>
 	/// Update game events
@@ -49,5 +53,7 @@ public:
 	void Render();
 
 private:
+	SpriteRenderer renderer;
+
 	glm::vec2 pos = { 0.0, 0.0 };
 };

@@ -1,14 +1,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "renderer/game.h"
-#include "renderer/resource-manager.h"
+#include "game/game.h"
+#include "engine/resource-manager.h"
 
 #include <iostream>
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void joystick_callback(int jid, int event);
+
+int joysticks[GLFW_JOYSTICK_LAST + 1];
+int joystick_count = 0;
 
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 1920;
@@ -17,7 +21,7 @@ const unsigned int SCREEN_HEIGHT = 1080;
 
 const float TARGET_FPS = 60.0f;
 
-Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+Game* game = nullptr;
 
 int main(int argc, char* argv[])
 {
@@ -42,6 +46,7 @@ int main(int argc, char* argv[])
     }
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetJoystickCallback(joystick_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
@@ -50,9 +55,11 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT);
+
     // initialize game
     // ---------------
-    Breakout.Init();
+    game->Init();
 
     // deltaTime variables
     // -------------------
@@ -71,16 +78,17 @@ int main(int argc, char* argv[])
 
         // update game state
         // -----------------
-        Breakout.Update(deltaTime);
+        game->Update(deltaTime);
 
-        if (frameCounter >= (1.0 / TARGET_FPS)) {
+        if (frameCounter >= (1.0 / TARGET_FPS)) 
+        {
             frameCounter = 0;
 
             // render
             // ------
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            Breakout.Render();
+            game->Render();
 
             glfwSwapBuffers(window);
         }
@@ -96,9 +104,30 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+void joystick_callback(int jid, int event)
+{
+    if (event == GLFW_CONNECTED)
+        joysticks[joystick_count++] = jid;
+    else if (event == GLFW_DISCONNECTED)
+    {
+        int i;
+
+        for (i = 0; i < joystick_count; i++)
+        {
+            if (joysticks[i] == jid)
+                break;
+        }
+
+        for (i = i + 1; i < joystick_count; i++)
+            joysticks[i - 1] = joysticks[i];
+
+        joystick_count--;
+    }
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    Breakout.ProcessInput(key, action);
+    game->ProcessKeyInput(key, action);
 
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -106,9 +135,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-            Breakout.keys[key] = true;
+            game->keys[key] = true;
         else if (action == GLFW_RELEASE)
-            Breakout.keys[key] = false;
+            game->keys[key] = false;
     }
 }
 
