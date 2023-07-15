@@ -26,7 +26,7 @@ project "Game"
 
     -- Include directories containing only '.h' files.
     includedirs {
-        "include/",
+        "inc/",
         "vendor/glfw/include/",
         "vendor/glad/include/",
         "vendor/glm/",
