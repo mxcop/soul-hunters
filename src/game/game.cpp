@@ -64,6 +64,7 @@ void Game::Init()
 	
 	// Create a light.
 	test_light = new Light({ 0.0f, 0.0f }, 5.0f);
+	test_light->set_projection(projection);
 }
 
 bool up = false;
@@ -145,12 +146,15 @@ void Game::Update(float dt)
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
-	test_light->compute();
+	test_light->set_pos(pos);
+	// test_light->compute();
 }
 
 void Game::Render()
 {
-	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+
+	test_light->draw();
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
@@ -163,6 +167,4 @@ void Game::Render()
 		pos + glm::vec2(80.0f * 5, 0),
 		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
-
-	test_light->draw();
 }
