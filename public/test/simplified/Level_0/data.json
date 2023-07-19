@@ -11,5 +11,19 @@
 	"layers": [
 		"Background.png"
 	],
-	"entities" : {}
+	"entities": {
+		"Wall": [
+			{
+				"id": "Wall",
+				"iid": "d0550e70-1460-11ee-ab40-ffa000bb0df2",
+				"layer": "Walls",
+				"x": 52,
+				"y": 4,
+				"width": 104,
+				"height": 8,
+				"color": 12470831,
+				"customFields" : {}
+			}
+		]
+	}
 }

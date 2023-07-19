@@ -7,6 +7,8 @@
 #include "../engine/renderer/tilemap.h"
 #include "../engine/renderer/light.h"
 
+#include "collider.h"
+
 #include <stdlib.h>
 
 #include "../engine/inputs.h"
@@ -20,6 +22,8 @@ Game::Game(int width, int height):
 
 Tilemap* test_map;
 Light* test_light;
+//Collider* test_collider;
+Collider* test_player;
 
 Game::~Game()
 {
@@ -44,11 +48,18 @@ void Game::Init()
 	const auto& world = ldtk_project.getWorld();
 	const auto& level = world.getLevel("Level_0");
 	const auto& layer = level.getLayer("Background");
+	const auto& layer2 = level.getLayer("Walls");
 	const auto& tiles_vector = layer.allTiles();
 	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
+	// -----------------------------------------------------------------------
+	for (const auto& wall : layer2.allEntities())
+	{
+		Collider::make({ (wall.getPosition().x / 8.0f) - 16.0f, (wall.getPosition().y / 8.0f) + 15.0f}, { wall.getSize().x / 7.0f, wall.getSize().y / 3.0f});
+	}
+
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 80.0f, static_cast<float>(this->width) / 80.0f, -static_cast<float>(this->height) / 80.0f, static_cast<float>(this->height) / 80.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 60.0f, static_cast<float>(this->width) / 60.0f, -static_cast<float>(this->height) / 60.0f, static_cast<float>(this->height) / 60.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
@@ -64,6 +75,10 @@ void Game::Init()
 	
 	// Create a light.
 	test_light = new Light({ 0.0f, 0.0f }, 5.0f);
+
+	// Create a test collider
+	//test_collider = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
+	test_player = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
 }
 
 bool up = false;
@@ -146,6 +161,11 @@ void Game::Update(float dt)
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
 	test_light->compute();
+
+	test_player->set_pos(pos);
+
+	if (test_player->check())
+		printf("The wall is wall!\r\n\n");
 }
 
 void Game::Render()
