@@ -5,6 +5,7 @@
 
 #include "LDtkLoader/Project.hpp"
 #include "../engine/renderer/tilemap.h"
+#include "../engine/renderer/light.h"
 
 #include <stdlib.h>
 
@@ -18,6 +19,7 @@ Game::Game(int width, int height):
 }
 
 Tilemap* test_map;
+Light* test_light;
 
 Game::~Game()
 {
@@ -34,6 +36,7 @@ void Game::Init()
 	// Renderer setup functions:
 	SpriteRenderer::setup("sprite");
 	Tilemap::setup();
+	Light::setup();
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -45,7 +48,7 @@ void Game::Init()
 	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 80.0f, static_cast<float>(this->width) / 80.0f, -static_cast<float>(this->height) / 80.0f, static_cast<float>(this->height) / 80.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
@@ -58,6 +61,9 @@ void Game::Init()
 
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
+	
+	// Create a light.
+	test_light = new Light({ 0.0f, 0.0f }, 5.0f);
 }
 
 bool up = false;
@@ -113,7 +119,7 @@ void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
 
 }
 
-float speed = 400.0f;
+float speed = 10.0f;
 float rotation = 0;
 
 void Game::Update(float dt)
@@ -138,21 +144,25 @@ void Game::Update(float dt)
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
+
+	test_light->compute();
 }
 
 void Game::Render()
 {
-	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(4.0f, 4.0f));
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
 		pos,
-		glm::vec2(80.0f, 80.0f),
+		glm::vec2(2.0f, 2.0f),
 		rotation);
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
 		pos + glm::vec2(80.0f * 5, 0),
-		glm::vec2(80.0f * 5, 80.0f),
+		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
+
+	test_light->draw();
 }

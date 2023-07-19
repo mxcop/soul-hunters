@@ -39,8 +39,8 @@ void Tilemap::gl_init()
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 
-	float half_width = width / 0.5f;
-	float half_height = height / 0.5f;
+	float half_width = width / 2.0f;
+	float half_height = height / 2.0f;
 
 	float vertices[] =
 	{
@@ -120,7 +120,7 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	// Set the uniforms within the shader:
 	this->shader.use();
 	shader.set_float("tileset_size", static_cast<float>(tileset_len));
-	shader.set_vec2f("map_size", glm::vec2(width, height) * 4.0f);
+	shader.set_vec2f("map_size", glm::vec2(width, height) * 1.0f);
 	this->shader.set_mat4("model", model);
 
 	// Bind the textures:
