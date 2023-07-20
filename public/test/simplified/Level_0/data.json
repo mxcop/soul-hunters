@@ -2,7 +2,7 @@
 	"identifier": "Level_0",
 	"uniqueIdentifer": "63934912-1460-11ee-8131-170118e1a0c2",
 	"x": 0,
-	"y": 0,
+	"y": -256,
 	"width": 256,
 	"height": 256,
 	"bgColor": "#696A79",
@@ -15,12 +15,23 @@
 		"Wall": [
 			{
 				"id": "Wall",
-				"iid": "d0550e70-1460-11ee-ab40-ffa000bb0df2",
+				"iid": "2a793a30-1460-11ee-b396-75f547324575",
 				"layer": "Walls",
-				"x": 52,
-				"y": 4,
+				"x": 0,
+				"y": 8,
 				"width": 104,
 				"height": 8,
+				"color": 12470831,
+				"customFields" : {}
+			},
+			{
+				"id": "Wall",
+				"iid": "aadecec0-1460-11ee-b396-7bc7a17500a9",
+				"layer": "Walls",
+				"x": 96,
+				"y": 96,
+				"width": 8,
+				"height": 88,
 				"color": 12470831,
 				"customFields" : {}
 			}

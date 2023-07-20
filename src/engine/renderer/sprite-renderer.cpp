@@ -73,10 +73,10 @@ void SpriteRenderer::init_renderdata()
 	float vertices[] =
 	{
 		// x   y      u     v
-		-0.5f, 0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f, 1.0f
+		0.0f, 1.0f,  0.0f, 0.0f,
+		1.0f, 1.0f,  1.0f, 0.0f,
+		1.0f, 0.0f,  1.0f, 1.0f,
+		0.0f, 0.0f,  0.0f, 1.0f
 	};
 
 	// Upload the vertices to the buffer

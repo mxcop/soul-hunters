@@ -17,9 +17,13 @@ bool Collider::check()
 		{
 			continue;
 		}
-		if (this->pos.x >= other.left && this->pos.x <= other.right && this->pos.y >= other.top && this->pos.y <= other.bottom)
+		float left = other.pos.x - (this->pos.x + this->size.x);
+		float top = (other.pos.y + other.size.y) - this->pos.y;
+		float right = (other.pos.x + other.size.x) - this->pos.x;
+		float bottom = other.pos.y - (this->pos.y + this->size.y);
+
+		if (!(left > 0 || right < 0 || top < 0 || bottom > 0))
 		{
-			printf("TRUE\r\n\n");
 			return true;
 		}
 	}
@@ -42,8 +46,6 @@ Collider::Collider(glm::vec2 pos, glm::vec2 size, int id)
 
 void Collider::update_bounds()
 {
-	this->left = this->pos.x - this->size.x / 2;
-	this->top = this->pos.y - this->size.y / 2;
-	this->right = this->pos.x + this->size.x / 2;
-	this->bottom = this->pos.y + this->size.y / 2;
+	this->top = this->pos.y + this->size.y;
+	this->right = this->pos.x + this->size.x;
 }

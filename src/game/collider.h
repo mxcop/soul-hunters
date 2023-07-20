@@ -17,7 +17,7 @@ private:
 	Collider(glm::vec2 pos, glm::vec2 size, int id);
 
 	glm::vec2 pos, size;
-	float left, top, right, bottom;
+	float top, right;
 	int id;
 
 	static std::vector<Collider> colliders;

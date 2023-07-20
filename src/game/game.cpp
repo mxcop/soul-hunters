@@ -52,14 +52,16 @@ void Game::Init()
 	const auto& tiles_vector = layer.allTiles();
 	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
+	glm::vec2 level_offset = { level.position.x / 8.0f, level.position.y / 8.0f };
+
 	// -----------------------------------------------------------------------
 	for (const auto& wall : layer2.allEntities())
 	{
-		Collider::make({ (wall.getPosition().x / 8.0f) - 16.0f, (wall.getPosition().y / 8.0f) + 15.0f}, { wall.getSize().x / 7.0f, wall.getSize().y / 3.0f});
+		Collider::make({ -level_offset.x - (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) }, { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f});
 	}
 
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 60.0f, static_cast<float>(this->width) / 60.0f, -static_cast<float>(this->height) / 60.0f, static_cast<float>(this->height) / 60.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
