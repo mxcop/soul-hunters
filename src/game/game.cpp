@@ -31,7 +31,7 @@ std::string relative_path(path p)
 	return std::filesystem::absolute(p).string();
 }
 
-void Game::Init()
+void Game::init()
 {
 	// Renderer setup functions:
 	SpriteRenderer::setup("sprite");
@@ -72,7 +72,7 @@ bool down = false;
 bool left = false;
 bool right = false;
 
-void Game::ProcessKeyInput(int key, int action)
+void Game::key_input(int key, int action)
 {
 	if (key == GLFW_KEY_W) {
 		if (action == GLFW_PRESS) {
@@ -113,7 +113,7 @@ void Game::ProcessKeyInput(int key, int action)
 
 glm::vec2 movement;
 
-void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
+void Game::joystick_input(const float* axes, const unsigned char* buttons)
 {
 	movement.x = axes[LEFT_STICK_X];
 	movement.y = -axes[LEFT_STICK_Y];
@@ -123,7 +123,7 @@ void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
 float speed = 10.0f;
 float rotation = 0;
 
-void Game::Update(float dt)
+void Game::update(float dt)
 {
 	// Get the state of the axes
 	int axes_count;
@@ -134,7 +134,7 @@ void Game::Update(float dt)
 	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
 
 	if (axes != nullptr && buttons != nullptr)
-		Game::ProcessJoystickInput(axes, buttons);
+		Game::joystick_input(axes, buttons);
 
 	if (up) pos.y += speed * dt;
 	if (down) pos.y -= speed * dt;
@@ -150,7 +150,12 @@ void Game::Update(float dt)
 	// test_light->compute();
 }
 
-void Game::Render()
+void Game::fixed_update() 
+{
+	test_light->compute();
+}
+
+void Game::render()
 {
 	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 

@@ -92,9 +92,6 @@ void Light::compute()
 
 void Light::draw()
 {
-	// TODO: move this to a fixed_update function running at the framerate of the game.
-	compute();
-
     /* Enable the stencil buffer for drawing */
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_ALWAYS, 1, 0xFF);
