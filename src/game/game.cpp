@@ -35,7 +35,7 @@ std::string relative_path(path p)
 	return std::filesystem::absolute(p).string();
 }
 
-void Game::init()
+void Game::Init()
 {
 	// Renderer setup functions:
 	SpriteRenderer::setup("sprite");
@@ -76,8 +76,7 @@ void Game::init()
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
 	// Create a light.
-	test_light = new Light({ 0.0f, 0.0f }, 10.0f);
-	test_light->set_projection(projection);
+	test_light = new Light({ 0.0f, 0.0f }, 5.0f);
 
 	// Create a test collider
 	//test_collider = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
@@ -89,7 +88,7 @@ bool down = false;
 bool left = false;
 bool right = false;
 
-void Game::key_input(int key, int action)
+void Game::ProcessKeyInput(int key, int action)
 {
 	if (key == GLFW_KEY_W) {
 		if (action == GLFW_PRESS) {
@@ -130,7 +129,7 @@ void Game::key_input(int key, int action)
 
 glm::vec2 movement;
 
-void Game::joystick_input(const float* axes, const unsigned char* buttons)
+void Game::ProcessJoystickInput(const float* axes, const unsigned char* buttons)
 {
 	movement.x = axes[LEFT_STICK_X];
 	movement.y = -axes[LEFT_STICK_Y];
@@ -140,7 +139,7 @@ void Game::joystick_input(const float* axes, const unsigned char* buttons)
 float speed = 10.0f;
 float rotation = 0;
 
-void Game::update(float dt)
+void Game::Update(float dt)
 {
 	// Get the state of the axes
 	int axes_count;
@@ -151,7 +150,7 @@ void Game::update(float dt)
 	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
 
 	if (axes != nullptr && buttons != nullptr)
-		Game::joystick_input(axes, buttons);
+		Game::ProcessJoystickInput(axes, buttons);
 
 	glm::vec2 vel = { 0, 0 };
 
@@ -173,20 +172,12 @@ void Game::update(float dt)
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
-	test_light->set_pos(pos);
-	// test_light->compute();
-}
-
-void Game::fixed_update() 
-{
 	test_light->compute();
 }
 
-void Game::render()
+void Game::Render()
 {
-	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
-
-	test_light->draw();
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
@@ -199,4 +190,6 @@ void Game::render()
 		test_player->get_pos() + glm::vec2(80.0f * 5, 0),
 		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
+
+	test_light->draw();
 }

@@ -30,37 +30,32 @@ public:
 	/// <summary>
 	/// Initialize game state (load shaders/textures)
 	/// </summary>
-	void init();
+	void Init();
 
 	/// <summary>
 	/// Process the input from the keyboard
 	/// </summary>
 	/// <param name="key">- Key pressed</param>
 	/// <param name="action">- Action performed by player</param>
-	void key_input(int key, int action);
+	void ProcessKeyInput(int key, int action);
 
 	/// <summary>
 	/// Process the input from the joystick
 	/// </summary>
 	/// <param name="axes">- Axes data</param>
 	/// <param name="buttons">- Buttons data</param>
-	void joystick_input(const float* axes, const unsigned char* buttons);
+	void ProcessJoystickInput(const float* axes, const unsigned char* buttons);
 
 	/// <summary>
 	/// Update game events
 	/// </summary>
 	/// <param name="dt">- delta time</param>
-	void update(float dt);
-
-	/// <summary>
-	/// Fixed update running at 60fps
-	/// </summary>
-	void fixed_update();
+	void Update(float dt);
 	
 	/// <summary>
 	/// Render the game
 	/// </summary>
-	void render();
+	void Render();
 
 private:
 	SpriteRenderer renderer;
