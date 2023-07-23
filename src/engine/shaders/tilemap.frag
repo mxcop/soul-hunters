@@ -23,6 +23,7 @@ uniform vec2 map_size;
 void main() {
     /* Get the tilemap data position to sample the tilemap data */
     vec2 tile_data_pos = (frag_pos - origin) / map_size;
+    tile_data_pos.y = 1.0 - tile_data_pos.y; 
 
     /* Sample the tiledata texture to get the relative tile index */
     float index = texture(tile_data, tile_data_pos).r * 255.0 - 1.0/* <- because it is incremented once on the CPU */;
@@ -32,7 +33,7 @@ void main() {
     vec2 offset = map_pos - floor(map_pos);
 
     /* Sample the tileset texture using the tile index */
-    color = texture(tileset, vec2((index + offset.x) / tileset_size, offset.y));
+    color = texture(tileset, vec2((index + offset.x) / tileset_size, 1.0 - offset.y));
 
     /* Any tiles that are '0' are transparent */
     color.a *= index + 1;
