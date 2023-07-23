@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
     // initialize game
     // ---------------
-    game->Init();
+    game->init();
 
     // deltaTime variables
     // -------------------
@@ -78,17 +78,21 @@ int main(int argc, char* argv[])
 
         // update game state
         // -----------------
-        game->Update(deltaTime);
+        game->update(deltaTime);
 
         if (frameCounter >= (1.0 / TARGET_FPS)) 
         {
             frameCounter = 0;
 
+            // fixed update
+            // ------------
+            game->fixed_update();
+
             // render
             // ------
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            game->Render();
+            game->render();
 
             glfwSwapBuffers(window);
         }
@@ -127,7 +131,7 @@ void joystick_callback(int jid, int event)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    game->ProcessKeyInput(key, action);
+    game->key_input(key, action);
 
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
