@@ -57,11 +57,11 @@ void Game::Init()
 	// -----------------------------------------------------------------------
 	for (const auto& wall : layer2.allEntities())
 	{
-		Collider::make({ -level_offset.x - (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) }, { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f});
+		Collider::make({ -level_offset.x + (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) }, { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f});
 	}
 
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(0.0f - 4.0f, static_cast<float>(this->width - 4) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
@@ -152,22 +152,41 @@ void Game::Update(float dt)
 	if (axes != nullptr && buttons != nullptr)
 		Game::ProcessJoystickInput(axes, buttons);
 
-	if (up) pos.y += speed * dt;
-	if (down) pos.y -= speed * dt;
-	if (left) pos.x -= speed * dt;
-	if (right) pos.x += speed * dt;
+	glm::vec2 vel = { 0, 0 };
 
-	pos += movement * dt * speed;
+	if (up) vel.y += speed;
+	if (down) vel.y -= speed;
+	if (left) vel.x -= speed;
+	if (right) vel.x += speed;
+
+	//test_player->set_vel(test_player->get_vel() + vel * dt);
+
+	glm::vec2 normal = {};
+	float collision_time = test_player->swept_aabb(normal);
+	test_player->set_pos(test_player->get_pos() + test_player->get_vel() * collision_time);
+	float remaining_time = 1.0f - collision_time;
+
+	//// slide 
+	//float dotprod = (test_player->get_vel().x * normal.y + test_player->get_vel().y * normal.x) * remaining_time;
+	//test_player->set_vel({ dotprod * normal.y, dotprod * normal.x });
+
+	float magnitude = sqrt((test_player->get_vel().x * test_player->get_vel().x + test_player->get_vel().y * test_player->get_vel().y)) * remaining_time;
+	float dotprod = test_player->get_vel().x * normal.y + test_player->get_vel().y * normal.x;
+
+	if (dotprod > 0.0f) dotprod = 1.0f;
+	else if (dotprod < 0.0f) dotprod = -1.0f;
+
+	test_player->set_vel({ dotprod * normal.y * magnitude + vel.x * dt, dotprod * normal.x * magnitude + vel.y * dt } );
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
 	test_light->compute();
 
-	test_player->set_pos(pos);
-
 	if (test_player->check())
+	{
 		printf("The wall is wall!\r\n\n");
+	}
 }
 
 void Game::Render()
@@ -176,13 +195,13 @@ void Game::Render()
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
-		pos,
+		test_player->get_pos(),
 		glm::vec2(2.0f, 2.0f),
 		rotation);
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
-		pos + glm::vec2(80.0f * 5, 0),
+		test_player->get_pos() + glm::vec2(80.0f * 5, 0),
 		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
 
