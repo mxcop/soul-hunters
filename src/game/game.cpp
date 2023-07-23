@@ -63,7 +63,7 @@ void Game::Init()
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
 	// Create a light.
-	test_light = new Light({ 0.0f, 0.0f }, 5.0f);
+	test_light = new Light({ 0.0f, 0.0f }, 10.0f);
 	test_light->set_projection(projection);
 }
 

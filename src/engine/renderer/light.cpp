@@ -45,6 +45,8 @@ const std::vector<glm::vec2> wall_vertices = {
 	{  1.0f, 3.0f },
 };
 
+// TODO: pass wall edges into Light::compute.
+// TODO: only compute edges within light range.
 void Light::compute()
 {
 	uint16_t wall_segments = wall_vertices.size() / 2;
@@ -63,18 +65,18 @@ void Light::compute()
 		vertices[i * 12 + 2] = wall_vert2.x;
 		vertices[i * 12 + 3] = wall_vert2.y;
 
-		vertices[i * 12 + 4] = wall_vert1.x + 10 * (wall_vert1.x - pos.x);
-		vertices[i * 12 + 5] = wall_vert1.y + 10 * (wall_vert1.y - pos.y);
+		vertices[i * 12 + 4] = wall_vert1.x + range * (wall_vert1.x - pos.x);
+		vertices[i * 12 + 5] = wall_vert1.y + range * (wall_vert1.y - pos.y);
 
 		/* Second triangle */
 		vertices[i * 12 + 6] = wall_vert2.x;
 		vertices[i * 12 + 7] = wall_vert2.y;
 
-		vertices[i * 12 + 8] = wall_vert1.x + 10 * (wall_vert1.x - pos.x);
-		vertices[i * 12 + 9] = wall_vert1.y + 10 * (wall_vert1.y - pos.y);
+		vertices[i * 12 + 8] = wall_vert1.x + range * (wall_vert1.x - pos.x);
+		vertices[i * 12 + 9] = wall_vert1.y + range * (wall_vert1.y - pos.y);
 
-		vertices[i * 12 + 10] = wall_vert2.x + 10 * (wall_vert2.x - pos.x);
-		vertices[i * 12 + 11] = wall_vert2.y + 10 * (wall_vert2.y - pos.y);
+		vertices[i * 12 + 10] = wall_vert2.x + range * (wall_vert2.x - pos.x);
+		vertices[i * 12 + 11] = wall_vert2.y + range * (wall_vert2.y - pos.y);
 	}
 
 	/* Write the computed shadow vertices into the buffers */
@@ -125,7 +127,7 @@ void Light::draw()
 
 	/* Compute the model matrix */
 	model = glm::translate(model, glm::vec3(pos, 0.0f));
-	model = glm::scale(model, glm::vec3(15.0f, 15.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(range, range, 1.0f));
 
 	/* Draw the light with respect to the shadow mask */
 	this->shader.use();
