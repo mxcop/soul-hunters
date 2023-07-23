@@ -16,15 +16,15 @@ Light::Light(glm::vec2 pos, float range)
 void Light::setup()
 {
 	const std::string vert_src =
-	#include "../shaders/debug.vert"
+	#include "../shaders/light.vert"
 	;
 
 	const std::string frag_src =
-	#include "../shaders/debug.frag"
+	#include "../shaders/light.frag"
 	;
 
 	/* Load the shader program and save it */
-	shader = ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "debug");
+	shader = ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "light");
 }
 
 // TEMP: for testing.
