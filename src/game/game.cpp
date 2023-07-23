@@ -173,7 +173,7 @@ void Game::update(float dt)
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
-	test_light->set_pos(pos);
+	test_light->set_pos(test_player->get_pos());
 	// test_light->compute();
 }
 
@@ -184,7 +184,7 @@ void Game::fixed_update()
 
 void Game::render()
 {
-	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+	test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 
 	test_light->draw();
 
