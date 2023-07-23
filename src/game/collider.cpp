@@ -53,7 +53,6 @@ glm::vec2 Collider::get_vel()
 
 float Collider::swept_aabb(glm::vec2& normal)
 {
-	
 	float min = 1.0f;
 
 	for (Collider& other : colliders)

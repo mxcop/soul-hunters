@@ -159,34 +159,20 @@ void Game::Update(float dt)
 	if (left) vel.x -= speed;
 	if (right) vel.x += speed;
 
-	//test_player->set_vel(test_player->get_vel() + vel * dt);
-
 	glm::vec2 normal = {};
-	float collision_time = test_player->swept_aabb(normal);
-	test_player->set_pos(test_player->get_pos() + test_player->get_vel() * collision_time);
-	float remaining_time = 1.0f - collision_time;
+	glm::vec2 collision_time = {};
 
-	//// slide 
-	//float dotprod = (test_player->get_vel().x * normal.y + test_player->get_vel().y * normal.x) * remaining_time;
-	//test_player->set_vel({ dotprod * normal.y, dotprod * normal.x });
+	test_player->set_vel({ vel.x * dt, 0.0f });
+	collision_time.x = test_player->swept_aabb(normal);
+	test_player->set_vel({ 0.0f, vel.y * dt });
+	collision_time.y = test_player->swept_aabb(normal);
 
-	float magnitude = sqrt((test_player->get_vel().x * test_player->get_vel().x + test_player->get_vel().y * test_player->get_vel().y)) * remaining_time;
-	float dotprod = test_player->get_vel().x * normal.y + test_player->get_vel().y * normal.x;
-
-	if (dotprod > 0.0f) dotprod = 1.0f;
-	else if (dotprod < 0.0f) dotprod = -1.0f;
-
-	test_player->set_vel({ dotprod * normal.y * magnitude + vel.x * dt, dotprod * normal.x * magnitude + vel.y * dt } );
+	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time);
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
 
 	test_light->compute();
-
-	if (test_player->check())
-	{
-		printf("The wall is wall!\r\n\n");
-	}
 }
 
 void Game::Render()
