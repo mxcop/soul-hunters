@@ -41,7 +41,7 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void SpriteRenderer::setup(std::string shader_name)
+void SpriteRenderer::setup()
 {
 	const std::string vert_src =
 	#include "../shaders/sprite.vert"
@@ -52,13 +52,13 @@ void SpriteRenderer::setup(std::string shader_name)
 	;
 
 	// Load in shaders.
-	shader = ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, shader_name);
+	shader = ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "sprite");
 
 	// Set up shaders.
 	shader.use().set_int("sprite", 0); // GL_TEXTURE0
 }
 
-void SpriteRenderer::set_projection(glm::mat4 projection, std::string shader_name)
+void SpriteRenderer::set_projection(glm::mat4 projection)
 {
 	shader.use().set_mat4("projection", projection);
 }

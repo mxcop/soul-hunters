@@ -51,7 +51,7 @@ public:
 	/// </summary>
 	/// <param name="normal">- The normal of the static Collider Object</param>
 	/// <returns> A number between 0 and 1 that indicates when the collision occurred. A value of 0 indicates the start of the movement and 1 indicates the end. If we get a value of 1, we can assume that there was no collision. A value of 0.5 means that the collision occurred halfway through the frame. </returns>
-	float swept_aabb(glm::vec2& normal);
+	float swept_aabb();
 	
 
 private:

@@ -1,17 +1,18 @@
 #include "game.h"
-#include "../engine/resource-manager.h"
 
 #include <filesystem>
-
-#include "LDtkLoader/Project.hpp"
-#include "../engine/renderer/tilemap.h"
-#include "../engine/renderer/light.h"
-
-#include "collider.h"
-
 #include <stdlib.h>
 
+#include "LDtkLoader/Project.hpp"
+
+#include "../engine/resource-manager.h"
+#include "../engine/renderer/tilemap.h"
+#include "../engine/renderer/light.h"
 #include "../engine/inputs.h"
+
+#include "collider.h"
+#include "player.h"
+
 
 using std::filesystem::path;
 
@@ -24,6 +25,7 @@ Tilemap* test_map;
 Light* test_light;
 //Collider* test_collider;
 Collider* test_player;
+Player* best_player;
 
 Game::~Game()
 {
@@ -38,7 +40,7 @@ std::string relative_path(path p)
 void Game::init()
 {
 	// Renderer setup functions:
-	SpriteRenderer::setup("sprite");
+	SpriteRenderer::setup();
 	Tilemap::setup();
 	Light::setup();
 
@@ -64,13 +66,16 @@ void Game::init()
 	glm::mat4 projection = glm::ortho(0.0f - 4.0f, static_cast<float>(this->width - 4) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
 
 	// Set the projection
-	renderer.set_projection(projection, "sprite");
+	renderer.set_projection(projection);
 	test_map->set_projection(projection);
 	
 	// Load texture
 	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
+
+	// Create the best player
+	best_player = new Player({0.0f, 0.0f}, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), ,this->keys);
 
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
@@ -160,15 +165,14 @@ void Game::update(float dt)
 	if (left) vel.x -= speed;
 	if (right) vel.x += speed;
 
-	glm::vec2 normal = {};
 	glm::vec2 collision_time = {};
 
 	test_player->set_vel({ vel.x * dt, 0.0f });
-	collision_time.x = test_player->swept_aabb(normal);
-	test_player->set_vel({ 0.0f, vel.y * dt });
-	collision_time.y = test_player->swept_aabb(normal);
+	collision_time.x = test_player->swept_aabb();
+	test_player->set_vel({ 0.0f, vel.y * dt});
+	collision_time.y = test_player->swept_aabb();
 
-	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time);
+	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time );
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/

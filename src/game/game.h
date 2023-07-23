@@ -19,8 +19,9 @@ class Game
 public:
 	// Game state
 	GameState state;
-	
-	bool keys[1024] = {0};
+
+	bool keys[1024] = { 0 };
+
 	int width, height;
 
 	// Constructor/Destructor

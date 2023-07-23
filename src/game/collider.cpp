@@ -51,7 +51,7 @@ glm::vec2 Collider::get_vel()
 	return this->velocity;
 }
 
-float Collider::swept_aabb(glm::vec2& normal)
+float Collider::swept_aabb()
 {
 	float min = 1.0f;
 
@@ -140,32 +140,7 @@ float Collider::swept_aabb(glm::vec2& normal)
 		// calculate normal of collided surface
 		if (entry_time < min)
 		{
-			if (entry.x > entry.y)
-			{
-				if (inv_entry.x < 0.0f)
-				{
-					normal.x = 1.0f;
-					normal.y = 0.0f;
-				}
-				else
-				{
-					normal.x = -1.0f;
-					normal.y = 0.0f;
-				}
-			}
-			else
-			{
-				if (inv_entry.y < 0.0f)
-				{
-					normal.x = 0.0f;
-					normal.y = 1.0f;
-				}
-				else
-				{
-					normal.x = 0.0f;
-					normal.y = -1.0f;
-				}
-			} // return the time of collision
+			 // return the time of collision
 			min = entry_time;
 		}
 	}
