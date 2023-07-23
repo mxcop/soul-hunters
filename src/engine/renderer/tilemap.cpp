@@ -39,16 +39,13 @@ void Tilemap::gl_init()
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 
-	float half_width = width / 2.0f;
-	float half_height = height / 2.0f;
-
 	float vertices[] =
 	{
 		/*   x    */ /*    y    */
-		-half_width,  half_height,
-		 half_width,  half_height,
-		 half_width, -half_height,
-		-half_width, -half_height
+		0.0f,			height,
+		width,			height,
+		width,			0.0f,
+		0.0f,			0.0f
 	};
 
 	// Upload the vertices to the buffer
@@ -115,7 +112,7 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	// Compute the model matrix:
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
-	model = glm::scale(model, glm::vec3(size.x, -size.y, 1.0f));
+	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.use();

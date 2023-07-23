@@ -7,6 +7,8 @@
 #include "../engine/renderer/tilemap.h"
 #include "../engine/renderer/light.h"
 
+#include "collider.h"
+
 #include <stdlib.h>
 
 #include "../engine/inputs.h"
@@ -20,6 +22,8 @@ Game::Game(int width, int height):
 
 Tilemap* test_map;
 Light* test_light;
+//Collider* test_collider;
+Collider* test_player;
 
 Game::~Game()
 {
@@ -44,11 +48,20 @@ void Game::init()
 	const auto& world = ldtk_project.getWorld();
 	const auto& level = world.getLevel("Level_0");
 	const auto& layer = level.getLayer("Background");
+	const auto& layer2 = level.getLayer("Walls");
 	const auto& tiles_vector = layer.allTiles();
 	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
+	glm::vec2 level_offset = { level.position.x / 8.0f, level.position.y / 8.0f };
+
+	// -----------------------------------------------------------------------
+	for (const auto& wall : layer2.allEntities())
+	{
+		Collider::make({ -level_offset.x + (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) }, { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f});
+	}
+
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 80.0f, static_cast<float>(this->width) / 80.0f, -static_cast<float>(this->height) / 80.0f, static_cast<float>(this->height) / 80.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(0.0f - 4.0f, static_cast<float>(this->width - 4) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
@@ -65,6 +78,10 @@ void Game::init()
 	// Create a light.
 	test_light = new Light({ 0.0f, 0.0f }, 10.0f);
 	test_light->set_projection(projection);
+
+	// Create a test collider
+	//test_collider = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
+	test_player = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
 }
 
 bool up = false;
@@ -136,12 +153,22 @@ void Game::update(float dt)
 	if (axes != nullptr && buttons != nullptr)
 		Game::joystick_input(axes, buttons);
 
-	if (up) pos.y += speed * dt;
-	if (down) pos.y -= speed * dt;
-	if (left) pos.x -= speed * dt;
-	if (right) pos.x += speed * dt;
+	glm::vec2 vel = { 0, 0 };
 
-	pos += movement * dt * speed;
+	if (up) vel.y += speed;
+	if (down) vel.y -= speed;
+	if (left) vel.x -= speed;
+	if (right) vel.x += speed;
+
+	glm::vec2 normal = {};
+	glm::vec2 collision_time = {};
+
+	test_player->set_vel({ vel.x * dt, 0.0f });
+	collision_time.x = test_player->swept_aabb(normal);
+	test_player->set_vel({ 0.0f, vel.y * dt });
+	collision_time.y = test_player->swept_aabb(normal);
+
+	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time);
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
@@ -163,13 +190,13 @@ void Game::render()
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
-		pos,
+		test_player->get_pos(),
 		glm::vec2(2.0f, 2.0f),
 		rotation);
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
-		pos + glm::vec2(80.0f * 5, 0),
+		test_player->get_pos() + glm::vec2(80.0f * 5, 0),
 		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
 }

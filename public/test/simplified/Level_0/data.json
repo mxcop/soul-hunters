@@ -2,7 +2,7 @@
 	"identifier": "Level_0",
 	"uniqueIdentifer": "63934912-1460-11ee-8131-170118e1a0c2",
 	"x": 0,
-	"y": 0,
+	"y": -256,
 	"width": 256,
 	"height": 256,
 	"bgColor": "#696A79",
@@ -11,5 +11,63 @@
 	"layers": [
 		"Background.png"
 	],
-	"entities" : {}
+	"entities": {
+		"Wall": [
+			{
+				"id": "Wall",
+				"iid": "2a793a30-1460-11ee-b396-75f547324575",
+				"layer": "Walls",
+				"x": 8,
+				"y": 8,
+				"width": 88,
+				"height": 8,
+				"color": 12470831,
+				"customFields" : {}
+			},
+			{
+				"id": "Wall",
+				"iid": "e0c28e20-1460-11ee-b396-abda4281291e",
+				"layer": "Walls",
+				"x": 96,
+				"y": 96,
+				"width": 8,
+				"height": 96,
+				"color": 12470831,
+				"customFields" : {}
+			},
+			{
+				"id": "Wall",
+				"iid": "aee67780-1460-11ee-b396-4fbed4d1dfcf",
+				"layer": "Walls",
+				"x": 56,
+				"y": 96,
+				"width": 40,
+				"height": 8,
+				"color": 12470831,
+				"customFields" : {}
+			},
+			{
+				"id": "Wall",
+				"iid": "b0ea84e0-1460-11ee-b396-1bca4ae79422",
+				"layer": "Walls",
+				"x": 8,
+				"y": 96,
+				"width": 24,
+				"height": 8,
+				"color": 12470831,
+				"customFields" : {}
+			},
+			{
+				"id": "Wall",
+				"iid": "b408dbe0-1460-11ee-b396-bdb9a5736631",
+				"layer": "Walls",
+				"x": 0,
+				"y": 96,
+				"width": 8,
+				"height": 96,
+				"color": 12470831,
+				"customFields" : {}
+			}
+		]
+	}
 }

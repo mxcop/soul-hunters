@@ -64,6 +64,4 @@ public:
 
 private:
 	SpriteRenderer renderer;
-
-	glm::vec2 pos = { 0.0, 0.0 };
 };
