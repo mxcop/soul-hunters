@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 
 #include "collider.h"
@@ -13,15 +12,16 @@
 class Player
 {
 public:
-	Player(glm::vec2 initial_pos, Texture2D& texture, std::optional<int> cid, bool keys[]);
+	Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys);
 
 	void update(float dt);
+	void draw(SpriteRenderer& renderer);
 
 	void set_cid(int cid);
 
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
 private:
-	Collider* collider;
+	Collider* collider = nullptr;
 	Texture2D texture;
 
 	glm::vec2 initial_pos = {};

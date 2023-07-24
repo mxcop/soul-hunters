@@ -69,8 +69,8 @@ public:
 
 private:
 	SpriteRenderer renderer;
-	Player* player_1;
-	Player* player_2;
+	Player* player_1 = nullptr;
+	Player* player_2 = nullptr;
 
 	int joysticks[GLFW_JOYSTICK_LAST + 1];
 	int joystick_count = 0;

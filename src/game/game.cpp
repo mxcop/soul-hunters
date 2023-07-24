@@ -22,8 +22,6 @@ Game::Game(int width, int height):
 
 Tilemap* test_map;
 Light* test_light;
-//Collider* test_collider;
-Collider* test_player;
 
 Game::~Game()
 {
@@ -80,55 +78,9 @@ void Game::init()
 	// Create a light.
 	test_light = new Light({ 0.0f, 0.0f }, 10.0f);
 	test_light->set_projection(projection);
-
-	// Create a test collider
-	//test_collider = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
-	test_player = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
 }
 
-bool up = false;
-bool down = false;
-bool left = false;
-bool right = false;
-
-void Game::key_input(int key, int action)
-{
-	if (key == GLFW_KEY_W) {
-		if (action == GLFW_PRESS) {
-			up = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			up = false;
-		}
-	}
-
-	if (key == GLFW_KEY_S) {
-		if (action == GLFW_PRESS) {
-			down = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			down = false;
-		}
-	}
-
-	if (key == GLFW_KEY_A) {
-		if (action == GLFW_PRESS) {
-			left = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			left = false;
-		}
-	}
-
-	if (key == GLFW_KEY_D) {
-		if (action == GLFW_PRESS) {
-			right = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			right = false;
-		}
-	}
-}
+void Game::key_input(int key, int action) {}
 
 glm::vec2 movement;
 
@@ -193,34 +145,20 @@ void Game::update(float dt)
 	if (axes != nullptr && buttons != nullptr)
 		Game::joystick_input(axes, buttons);
 
-	/*glm::vec2 vel = { 0, 0 };
-
-	if (up) vel.y += speed;
-	if (down) vel.y -= speed;
-	if (left) vel.x -= speed;
-	if (right) vel.x += speed;
-
-	glm::vec2 collision_time = {};
-
-	test_player->set_vel({ vel.x * dt, 0.0f });
-	collision_time.x = test_player->swept_aabb();
-	test_player->set_vel({ 0.0f, vel.y * dt});
-	collision_time.y = test_player->swept_aabb();
-
-	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time );*/
-
+	/* Update the players */
 	this->player_1->update(dt);
-	//this->player_2->update(dt);
 
-	/*rotation += dt * 45.0f;
-	if (rotation > 360.0f) rotation = 0.0f;*/
+	if (this->player_2 != nullptr) {
+		this->player_2->update(dt);
+	}
 
-	test_light->set_pos(test_player->get_pos());
-	// test_light->compute();
+	/* Move the testing light */
+	test_light->set_pos(this->player_1->get_pos());
 }
 
 void Game::fixed_update() 
 {
+	/* Compute the shadow mask of the test light */
 	test_light->compute();
 }
 
@@ -231,14 +169,15 @@ void Game::render()
 	test_light->draw();
 
 	renderer.draw_sprite(
-		ResourceManager::get_texture("bor"),
-		this->player_1->get_pos(),
-		glm::vec2(2.0f, 2.0f),
-		rotation);
-
-	renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
-		test_player->get_pos() + glm::vec2(80.0f * 5, 0),
+		glm::vec2(2, 2),
 		glm::vec2(1.0f * 5, 1.0f),
 		rotation);
+
+	/* Draw the players */
+	this->player_1->draw(renderer);
+
+	if (this->player_2 != nullptr) {
+		this->player_2->draw(renderer);
+	}
 }
