@@ -35,3 +35,8 @@ void Player::update(float dt)
 
 	this->collider->set_pos(this->collider->get_pos() + vel * dt * collision_time);
 }
+
+void Player::set_cid(int cid)
+{
+	this->cid = cid;
+}

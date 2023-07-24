@@ -11,9 +11,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void joystick_callback(int jid, int event);
 
-int joysticks[GLFW_JOYSTICK_LAST + 1];
-int joystick_count = 0;
-
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 1920;
 // The height of the screen
@@ -110,23 +107,7 @@ int main(int argc, char* argv[])
 
 void joystick_callback(int jid, int event)
 {
-    if (event == GLFW_CONNECTED)
-        joysticks[joystick_count++] = jid;
-    else if (event == GLFW_DISCONNECTED)
-    {
-        int i;
-
-        for (i = 0; i < joystick_count; i++)
-        {
-            if (joysticks[i] == jid)
-                break;
-        }
-
-        for (i = i + 1; i < joystick_count; i++)
-            joysticks[i - 1] = joysticks[i];
-
-        joystick_count--;
-    }
+    game->joystick_callback(jid, event);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)

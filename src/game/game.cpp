@@ -11,7 +11,6 @@
 #include "../engine/inputs.h"
 
 #include "collider.h"
-#include "player.h"
 
 
 using std::filesystem::path;
@@ -25,7 +24,6 @@ Tilemap* test_map;
 Light* test_light;
 //Collider* test_collider;
 Collider* test_player;
-Player* best_player;
 
 Game::~Game()
 {
@@ -74,8 +72,7 @@ void Game::init()
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
 
-	// Create the best player
-	best_player = new Player({0.0f, 0.0f}, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), ,this->keys);
+	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
 
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
@@ -142,6 +139,44 @@ void Game::joystick_input(const float* axes, const unsigned char* buttons)
 
 }
 
+void Game::joystick_callback(int jid, int event)
+{
+	if (event == GLFW_CONNECTED)
+	{
+		this->joysticks[this->joystick_count++] = jid;
+		if (this->player_2 != nullptr) {
+			// TODO: Update second player CID here...
+			this->player_2->set_cid(jid);
+		}
+		else {
+			// TODO: Spawn second player here...
+			player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
+		}
+	}
+	else if (event == GLFW_DISCONNECTED)
+	{
+		int i;
+
+		for (i = 0; i < this->joystick_count; i++)
+		{
+			if (this->joysticks[i] == jid)
+				break;
+		}
+
+		for (i = i + 1; i < this->joystick_count; i++)
+			this->joysticks[i - 1] = this->joysticks[i];
+
+		this->joystick_count--;
+
+		if (this->joystick_count > 0) {
+			int new_jid = this->joysticks[0];
+
+			// TODO: Update second player CID here...
+			player_2->set_cid(new_jid);
+		}
+	}
+}
+
 float speed = 10.0f;
 float rotation = 0;
 
@@ -158,7 +193,7 @@ void Game::update(float dt)
 	if (axes != nullptr && buttons != nullptr)
 		Game::joystick_input(axes, buttons);
 
-	glm::vec2 vel = { 0, 0 };
+	/*glm::vec2 vel = { 0, 0 };
 
 	if (up) vel.y += speed;
 	if (down) vel.y -= speed;
@@ -172,7 +207,10 @@ void Game::update(float dt)
 	test_player->set_vel({ 0.0f, vel.y * dt});
 	collision_time.y = test_player->swept_aabb();
 
-	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time );
+	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time );*/
+
+	this->player_1->update(dt);
+	//this->player_2->update(dt);
 
 	/*rotation += dt * 45.0f;
 	if (rotation > 360.0f) rotation = 0.0f;*/
@@ -194,7 +232,7 @@ void Game::render()
 
 	renderer.draw_sprite(
 		ResourceManager::get_texture("bor"),
-		test_player->get_pos(),
+		this->player_1->get_pos(),
 		glm::vec2(2.0f, 2.0f),
 		rotation);
 

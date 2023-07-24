@@ -17,6 +17,9 @@ public:
 
 	void update(float dt);
 
+	void set_cid(int cid);
+
+	glm::vec2 get_pos() { return this->collider->get_pos(); };
 private:
 	Collider* collider;
 	Texture2D texture;
