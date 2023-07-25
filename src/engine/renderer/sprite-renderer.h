@@ -28,14 +28,14 @@ public:
 	/// Load the shaders
 	/// </summary>
 	/// <param name="shader_name">- Set the name of the shader</param>
-	static void setup(std::string shader_name);
+	static void setup();
 
 	/// <summary>
 	/// Set the projection
 	/// </summary>
 	/// <param name="projection">- The projection matrix</param>
 	/// <param name="shader_name">- The name of the shader</param>
-	static void set_projection(glm::mat4 projection, std::string shader_name);
+	static void set_projection(glm::mat4 projection);
 private:
 	static Shader shader;
 	GLuint vao;

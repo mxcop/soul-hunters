@@ -6,6 +6,8 @@
 
 #include "../engine/renderer/sprite-renderer.h"
 
+#include "player.h"
+
 // Might want to add more depending on what we want later on
 enum GameState 
 {
@@ -19,8 +21,9 @@ class Game
 public:
 	// Game state
 	GameState state;
-	
-	bool keys[1024] = {0};
+
+	bool keys[1024] = { 0 };
+
 	int width, height;
 
 	// Constructor/Destructor
@@ -39,12 +42,7 @@ public:
 	/// <param name="action">- Action performed by player</param>
 	void key_input(int key, int action);
 
-	/// <summary>
-	/// Process the input from the joystick
-	/// </summary>
-	/// <param name="axes">- Axes data</param>
-	/// <param name="buttons">- Buttons data</param>
-	void joystick_input(const float* axes, const unsigned char* buttons);
+	void joystick_callback(int jid, int event);
 
 	/// <summary>
 	/// Update game events
@@ -64,4 +62,9 @@ public:
 
 private:
 	SpriteRenderer renderer;
+	Player* player_1 = nullptr;
+	Player* player_2 = nullptr;
+
+	int joysticks[GLFW_JOYSTICK_LAST + 1];
+	int joystick_count = 0;
 };

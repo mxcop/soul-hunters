@@ -1,17 +1,17 @@
 #include "game.h"
-#include "../engine/resource-manager.h"
 
 #include <filesystem>
+#include <stdlib.h>
 
 #include "LDtkLoader/Project.hpp"
+
+#include "../engine/resource-manager.h"
 #include "../engine/renderer/tilemap.h"
 #include "../engine/renderer/light.h"
+#include "../engine/inputs.h"
 
 #include "collider.h"
 
-#include <stdlib.h>
-
-#include "../engine/inputs.h"
 
 using std::filesystem::path;
 
@@ -22,8 +22,6 @@ Game::Game(int width, int height):
 
 Tilemap* test_map;
 Light* test_light;
-//Collider* test_collider;
-Collider* test_player;
 
 Game::~Game()
 {
@@ -38,9 +36,11 @@ std::string relative_path(path p)
 void Game::init()
 {
 	// Renderer setup functions:
-	SpriteRenderer::setup("sprite");
+	SpriteRenderer::setup();
 	Tilemap::setup();
 	Light::setup();
+
+	Collider::reserve_colliders(128);
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -64,7 +64,7 @@ void Game::init()
 	glm::mat4 projection = glm::ortho(0.0f - 4.0f, static_cast<float>(this->width - 4) / 30.0f, 0.0f, static_cast<float>(this->height) / 30.0f, 0.0f, 1000.0f);
 
 	// Set the projection
-	renderer.set_projection(projection, "sprite");
+	renderer.set_projection(projection);
 	test_map->set_projection(projection);
 	
 	// Load texture
@@ -72,69 +72,56 @@ void Game::init()
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
 
+	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
+
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == 1) {
+		this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), GLFW_JOYSTICK_1, this->keys);
+	}
+
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
 	// Create a light.
 	test_light = new Light({ 0.0f, 0.0f }, 10.0f);
 	test_light->set_projection(projection);
-
-	// Create a test collider
-	//test_collider = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
-	test_player = &Collider::make({ 0.0f, 0.0f }, { 2.0f, 2.0f });
 }
 
-bool up = false;
-bool down = false;
-bool left = false;
-bool right = false;
+void Game::key_input(int key, int action) {}
 
-void Game::key_input(int key, int action)
+void Game::joystick_callback(int jid, int event)
 {
-	if (key == GLFW_KEY_W) {
-		if (action == GLFW_PRESS) {
-			up = true;
+	if (event == GLFW_CONNECTED)
+	{
+		this->joysticks[this->joystick_count++] = jid;
+		if (this->player_2 != nullptr) {
+			this->player_2->set_cid(jid);
 		}
-		else if (action == GLFW_RELEASE) {
-			up = false;
-		}
-	}
-
-	if (key == GLFW_KEY_S) {
-		if (action == GLFW_PRESS) {
-			down = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			down = false;
+		else {
+			player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
 		}
 	}
+	else if (event == GLFW_DISCONNECTED)
+	{
+		int i;
 
-	if (key == GLFW_KEY_A) {
-		if (action == GLFW_PRESS) {
-			left = true;
+		for (i = 0; i < this->joystick_count; i++)
+		{
+			if (this->joysticks[i] == jid)
+				break;
 		}
-		else if (action == GLFW_RELEASE) {
-			left = false;
+
+		for (i = i + 1; i < this->joystick_count; i++)
+			this->joysticks[i - 1] = this->joysticks[i];
+
+		this->joystick_count--;
+
+		if (this->joystick_count > 0) {
+			int new_jid = this->joysticks[0];
+
+			// TODO: Update second player CID here...
+			player_2->set_cid(new_jid);
 		}
 	}
-
-	if (key == GLFW_KEY_D) {
-		if (action == GLFW_PRESS) {
-			right = true;
-		}
-		else if (action == GLFW_RELEASE) {
-			right = false;
-		}
-	}
-}
-
-glm::vec2 movement;
-
-void Game::joystick_input(const float* axes, const unsigned char* buttons)
-{
-	movement.x = axes[LEFT_STICK_X];
-	movement.y = -axes[LEFT_STICK_Y];
-
 }
 
 float speed = 10.0f;
@@ -142,43 +129,27 @@ float rotation = 0;
 
 void Game::update(float dt)
 {
-	// Get the state of the axes
-	int axes_count;
-	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+	//// Get the state of the buttons
+	//int button_count;
+	//const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
 
-	// Get the state of the buttons
-	int button_count;
-	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
+	//if (axes != nullptr && buttons != nullptr)
+	//	Game::joystick_input(axes, buttons);
 
-	if (axes != nullptr && buttons != nullptr)
-		Game::joystick_input(axes, buttons);
+	/* Update the players */
+	this->player_1->update(dt);
 
-	glm::vec2 vel = { 0, 0 };
+	if (this->player_2 != nullptr) {
+		this->player_2->update(dt);
+	}
 
-	if (up) vel.y += speed;
-	if (down) vel.y -= speed;
-	if (left) vel.x -= speed;
-	if (right) vel.x += speed;
-
-	glm::vec2 normal = {};
-	glm::vec2 collision_time = {};
-
-	test_player->set_vel({ vel.x * dt, 0.0f });
-	collision_time.x = test_player->swept_aabb(normal);
-	test_player->set_vel({ 0.0f, vel.y * dt });
-	collision_time.y = test_player->swept_aabb(normal);
-
-	test_player->set_pos(test_player->get_pos() + vel * dt * collision_time);
-
-	/*rotation += dt * 45.0f;
-	if (rotation > 360.0f) rotation = 0.0f;*/
-
-	test_light->set_pos(test_player->get_pos());
-	// test_light->compute();
+	/* Move the testing light */
+	test_light->set_pos(this->player_1->get_pos());
 }
 
 void Game::fixed_update() 
 {
+	/* Compute the shadow mask of the test light */
 	test_light->compute();
 }
 
@@ -188,15 +159,16 @@ void Game::render()
 
 	test_light->draw();
 
-	renderer.draw_sprite(
-		ResourceManager::get_texture("bor"),
-		test_player->get_pos(),
-		glm::vec2(2.0f, 2.0f),
-		rotation);
-
-	renderer.draw_sprite(
+	/*renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
-		test_player->get_pos() + glm::vec2(80.0f * 5, 0),
+		glm::vec2(2, 2),
 		glm::vec2(1.0f * 5, 1.0f),
-		rotation);
+		rotation);*/
+
+	/* Draw the players */
+	this->player_1->draw(renderer);
+
+	if (this->player_2 != nullptr) {
+		this->player_2->draw(renderer);
+	}
 }
