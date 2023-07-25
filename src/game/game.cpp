@@ -40,6 +40,8 @@ void Game::init()
 	Tilemap::setup();
 	Light::setup();
 
+	Collider::reserve_colliders(128);
+
 	// Load some level data:
 	ldtk::Project ldtk_project;
 	ldtk_project.loadFromFile("./public/test.ldtk");
@@ -72,6 +74,10 @@ void Game::init()
 
 	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
 
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == 1) {
+		this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), GLFW_JOYSTICK_1, this->keys);
+	}
+
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
@@ -82,26 +88,15 @@ void Game::init()
 
 void Game::key_input(int key, int action) {}
 
-glm::vec2 movement;
-
-void Game::joystick_input(const float* axes, const unsigned char* buttons)
-{
-	movement.x = axes[LEFT_STICK_X];
-	movement.y = -axes[LEFT_STICK_Y];
-
-}
-
 void Game::joystick_callback(int jid, int event)
 {
 	if (event == GLFW_CONNECTED)
 	{
 		this->joysticks[this->joystick_count++] = jid;
 		if (this->player_2 != nullptr) {
-			// TODO: Update second player CID here...
 			this->player_2->set_cid(jid);
 		}
 		else {
-			// TODO: Spawn second player here...
 			player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
 		}
 	}
@@ -134,16 +129,12 @@ float rotation = 0;
 
 void Game::update(float dt)
 {
-	// Get the state of the axes
-	int axes_count;
-	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+	//// Get the state of the buttons
+	//int button_count;
+	//const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
 
-	// Get the state of the buttons
-	int button_count;
-	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &button_count);
-
-	if (axes != nullptr && buttons != nullptr)
-		Game::joystick_input(axes, buttons);
+	//if (axes != nullptr && buttons != nullptr)
+	//	Game::joystick_input(axes, buttons);
 
 	/* Update the players */
 	this->player_1->update(dt);
@@ -168,11 +159,11 @@ void Game::render()
 
 	test_light->draw();
 
-	renderer.draw_sprite(
+	/*renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),
 		glm::vec2(2, 2),
 		glm::vec2(1.0f * 5, 1.0f),
-		rotation);
+		rotation);*/
 
 	/* Draw the players */
 	this->player_1->draw(renderer);

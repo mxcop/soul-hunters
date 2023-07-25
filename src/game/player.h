@@ -1,13 +1,14 @@
 #pragma once
 
+#include <optional>
+
 #include "glm/glm.hpp"
 
 #include "collider.h"
 
 #include "../engine/renderer/texture.h"
 #include "../engine/renderer/sprite-renderer.h"
-
-#include <optional>
+#include "../engine/inputs.h"
 
 class Player
 {

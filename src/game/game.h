@@ -42,13 +42,6 @@ public:
 	/// <param name="action">- Action performed by player</param>
 	void key_input(int key, int action);
 
-	/// <summary>
-	/// Process the input from the joystick
-	/// </summary>
-	/// <param name="axes">- Axes data</param>
-	/// <param name="buttons">- Buttons data</param>
-	void joystick_input(const float* axes, const unsigned char* buttons);
-
 	void joystick_callback(int jid, int event);
 
 	/// <summary>

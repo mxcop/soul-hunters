@@ -53,6 +53,7 @@ public:
 	/// <returns> A number between 0 and 1 that indicates when the collision occurred. A value of 0 indicates the start of the movement and 1 indicates the end. If we get a value of 1, we can assume that there was no collision. A value of 0.5 means that the collision occurred halfway through the frame. </returns>
 	float swept_aabb();
 	
+	static void reserve_colliders(size_t num) { colliders.reserve(num); };
 
 private:
 	Collider(glm::vec2 pos, glm::vec2 size, int id);

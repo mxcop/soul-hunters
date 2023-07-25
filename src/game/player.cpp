@@ -1,4 +1,5 @@
 #include "player.h"
+
 #include <GLFW/glfw3.h>
 
 Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
@@ -20,11 +21,23 @@ void Player::update(float dt)
 {
 	glm::vec2 vel = { 0, 0 };
 
-	if (this->keys[GLFW_KEY_W]) vel.y += speed;
-	if (this->keys[GLFW_KEY_S]) vel.y -= speed;
-	if (this->keys[GLFW_KEY_A]) vel.x -= speed;
-	if (this->keys[GLFW_KEY_D]) vel.x += speed;
-
+	if (this->is_host)
+	{
+		if (this->keys[GLFW_KEY_W]) vel.y += speed;
+		if (this->keys[GLFW_KEY_S]) vel.y -= speed;
+		if (this->keys[GLFW_KEY_A]) vel.x -= speed;
+		if (this->keys[GLFW_KEY_D]) vel.x += speed;
+	}
+	else
+	{
+		// Get the state of the axes
+		int axes_count;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+		
+		vel.x = axes[LEFT_STICK_X];
+		vel.y = -axes[LEFT_STICK_Y];
+		vel *= speed;
+	}
 	glm::vec2 collision_time = {};
 
 	this->collider->set_vel({ vel.x * dt, 0.0f });

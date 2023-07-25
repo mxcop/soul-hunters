@@ -4,6 +4,8 @@ std::vector<Collider> Collider::colliders;
 
 Collider& Collider::make(glm::vec2 pos, glm::vec2 size)
 {
+	assert(colliders.size() < colliders.capacity());
+
 	colliders.push_back(Collider(pos, size, colliders.size()));
 
 	return colliders.back();
