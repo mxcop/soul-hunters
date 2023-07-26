@@ -11,6 +11,7 @@
 #include "../engine/inputs.h"
 
 #include "collider.h"
+#include "ghost.h"
 
 
 using std::filesystem::path;
@@ -43,6 +44,7 @@ void Game::init()
 	Light::setup();
 
 	Collider::reserve_colliders(128);
+	Ghost::reserve_ghosts(512);
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -73,6 +75,7 @@ void Game::init()
 	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
 	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
+	ResourceManager::load_texture(relative_path("./public/ghost.png").c_str(), true, "ghost");
 
 	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
 
@@ -88,6 +91,12 @@ void Game::init()
 	test_light->set_projection(this->projection);
 	test_light2 = new Light({ 0.0f, 0.0f }, 10.0f);
 	test_light2->set_projection(this->projection);
+
+	// Create a ghost.
+	for (size_t i = 0; i < 128; i++)
+	{
+		Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	}
 }
 
 void Game::key_input(int key, int action) {}
@@ -122,7 +131,6 @@ void Game::joystick_callback(int jid, int event)
 		if (this->joystick_count > 0) {
 			int new_jid = this->joysticks[0];
 
-			// TODO: Update second player CID here...
 			player_2->set_cid(new_jid);
 		}
 	}
@@ -172,6 +180,13 @@ void Game::update(float dt)
 	light_dir = { light_dir.x / len, light_dir.y / len };
 
 	test_light->dir = light_dir;
+
+	/* Update ghosts */
+	Ghost::update_all(
+		this->player_1->get_pos(),
+		this->player_2 != nullptr ? this->player_2->get_pos() : glm::vec2(),
+		dt
+	);
 }
 
 void Game::fixed_update() 
@@ -200,4 +215,6 @@ void Game::render()
 	if (this->player_2 != nullptr) {
 		this->player_2->draw(renderer);
 	}
+
+	Ghost::draw_all(renderer);
 }

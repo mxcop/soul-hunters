@@ -22,11 +22,12 @@ public:
 
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
 private:
+	const float speed = 10.0f; 
+	
 	Collider* collider = nullptr;
 	Texture2D texture;
 
 	glm::vec2 initial_pos = {};
-	const float speed = 10.0f; 
 	bool is_host = true;
 	int cid = 0u;
 	bool* keys = nullptr;
