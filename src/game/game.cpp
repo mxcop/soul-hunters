@@ -44,7 +44,7 @@ void Game::init()
 	Light::setup();
 
 	Collider::reserve_colliders(128);
-	Ghost::reserve_ghosts(512);
+	Ghost::reserve_ghosts(128);
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -61,7 +61,26 @@ void Game::init()
 	// -----------------------------------------------------------------------
 	for (const auto& wall : layer2.allEntities())
 	{
-		Collider::make({ -level_offset.x + (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) }, { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f});
+		glm::vec2 wall_pos = { -level_offset.x + (wall.getPosition().x / 8.0f), -level_offset.y - (wall.getPosition().y / 8.0f) };
+		glm::vec2 wall_size = { wall.getSize().x / 8.0f, wall.getSize().y / 8.0f };
+
+		Collider::make(wall_pos, wall_size);
+
+		// Left edge
+		shadow_edges.push_back(wall_pos);
+		shadow_edges.push_back({ wall_pos.x, wall_pos.y + wall_size.y });
+
+		// Top edge
+		shadow_edges.push_back(wall_pos);
+		shadow_edges.push_back({ wall_pos.x + wall_size.x, wall_pos.y });
+
+		// Right edge
+		shadow_edges.push_back({ wall_pos.x + wall_size.x, wall_pos.y });
+		shadow_edges.push_back({ wall_pos.x + wall_size.x, wall_pos.y + wall_size.y });
+
+		// Bottom edge
+		shadow_edges.push_back({ wall_pos.x + wall_size.x, wall_pos.y + wall_size.y });
+		shadow_edges.push_back({ wall_pos.x, wall_pos.y + wall_size.y });
 	}
 
 	// Set up projection matrix
@@ -78,9 +97,11 @@ void Game::init()
 	ResourceManager::load_texture(relative_path("./public/ghost.png").c_str(), true, "ghost");
 
 	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
+	this->player_1->set_projection(this->projection);
 
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == 1) {
 		this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), GLFW_JOYSTICK_1, this->keys);
+		this->player_2->set_projection(this->projection);
 	}
 
 	// Create a tilemap.
@@ -93,7 +114,7 @@ void Game::init()
 	test_light2->set_projection(this->projection);
 
 	// Create a ghost.
-	for (size_t i = 0; i < 128; i++)
+	for (size_t i = 0; i < 32; i++)
 	{
 		Ghost::make({ rand() % 80, rand() % 40 }, 5);
 	}
@@ -110,7 +131,8 @@ void Game::joystick_callback(int jid, int event)
 			this->player_2->set_cid(jid);
 		}
 		else {
-			player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
+			this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
+			this->player_2->set_projection(this->projection);
 		}
 	}
 	else if (event == GLFW_DISCONNECTED)
@@ -136,19 +158,6 @@ void Game::joystick_callback(int jid, int event)
 	}
 }
 
-glm::vec3 viewToWorldCoordTransform(int win_w, int win_h, int mouse_x, int mouse_y, glm::mat4 proj) {
-	// NORMALISED DEVICE SPACE
-	double x = 2.0 * mouse_x / win_w - 1;
-	double y = 2.0 * mouse_y / win_h - 1;
-	// HOMOGENEOUS SPACE
-	glm::vec4 screenPos = glm::vec4(x, -y, -1.0f, 1.0f);
-	// Projection/Eye Space
-	glm::mat4 ProjectView = proj;
-	glm::mat4 viewProjectionInverse = inverse(ProjectView);
-	glm::vec4 worldPos = viewProjectionInverse * screenPos;
-	return glm::vec3(worldPos);
-}
-
 void Game::update(float dt)
 {
 	//// Get the state of the buttons
@@ -165,22 +174,6 @@ void Game::update(float dt)
 		this->player_2->update(dt);
 	}
 
-	/* Move the testing light */
-	test_light->pos = this->player_1->get_pos() + glm::vec2(1.0f, 1.0f);
-	test_light2->pos = test_light->pos;
-
-	double mousex, mousey;
-	glfwGetCursorPos(gl_window, &mousex, &mousey);
-
-	glm::vec2 mouse = viewToWorldCoordTransform(this->width, this->height, mousex, mousey, this->projection);
-	
-	glm::vec2 light_dir = mouse - test_light->pos;
-
-	double len = sqrt(light_dir.x * light_dir.x + light_dir.y * light_dir.y);
-	light_dir = { light_dir.x / len, light_dir.y / len };
-
-	test_light->dir = light_dir;
-
 	/* Update ghosts */
 	Ghost::update_all(
 		this->player_1->get_pos(),
@@ -192,16 +185,21 @@ void Game::update(float dt)
 void Game::fixed_update() 
 {
 	/* Compute the shadow mask of the test light */
-	test_light->compute();
-	test_light2->compute();
+	// test_light->compute();
+	// test_light2->compute();
+	player_1->fixed_update(gl_window, width, height, shadow_edges);
+
+	if (this->player_2 != nullptr) {
+		this->player_2->fixed_update(gl_window, width, height, shadow_edges);
+	}
 }
 
 void Game::render()
 {
 	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 
-	test_light2->draw();
-	test_light->draw();
+	// test_light2->draw();
+	// test_light->draw();
 
 	/*renderer.draw_sprite(
 		ResourceManager::get_texture("tileset"),

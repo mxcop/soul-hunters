@@ -37,4 +37,5 @@ void main() {
 
     /* Any tiles that are '0' are transparent */
     color.a *= index + 1;
+    color.a /= 10.0;
 })"

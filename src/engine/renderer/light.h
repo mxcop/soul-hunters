@@ -1,16 +1,18 @@
 #pragma once
 
+#include <vector>
 #include "shader.h"
 #include <glm/glm.hpp>
 
 class Light
 {
 public:
+    Light() {};
     Light(glm::vec2 pos, float range, float angle = 360.0f);
 
     static void setup();
 
-    void compute();
+    void compute(std::vector<glm::vec2>& shadow_edges);
     void draw();
 
     /// <summary>
@@ -25,6 +27,7 @@ private:
     static Shader shader;
     float range = 5.0f;
     float angle = 360.0f;
+    int edges = 0;
 
     struct {
         GLuint vao = 0;

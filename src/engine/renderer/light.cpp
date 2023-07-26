@@ -29,36 +29,35 @@ void Light::setup()
 }
 
 // TEMP: for testing.
-const std::vector<glm::vec2> wall_vertices = {
-	{ -1.0f, -2.0f },
-	{  1.0f, -2.0f },
-
-	{ -1.0f, 1.0f },
-	{  1.0f, 1.0f },
-
-	{ -1.0f, 3.0f },
-	{  1.0f, 3.0f },
-
-	{ -1.0f, 1.0f },
-	{ -1.0f, 3.0f },
-
-	{  1.0f, 1.0f },
-	{  1.0f, 3.0f },
-};
+//const std::vector<glm::vec2> wall_vertices = {
+//	{ -1.0f, -2.0f },
+//	{  1.0f, -2.0f },
+//
+//	{ -1.0f, 1.0f },
+//	{  1.0f, 1.0f },
+//
+//	{ -1.0f, 3.0f },
+//	{  1.0f, 3.0f },
+//
+//	{ -1.0f, 1.0f },
+//	{ -1.0f, 3.0f },
+//
+//	{  1.0f, 1.0f },
+//	{  1.0f, 3.0f },
+//};
 
 // TODO: pass wall edges into Light::compute.
 // TODO: only compute edges within light range.
-void Light::compute()
+void Light::compute(std::vector<glm::vec2>& shadow_edges)
 {
-	uint16_t wall_segments = wall_vertices.size() / 2;
+	edges = shadow_edges.size() / 2;
 	/* 12 vertices for each shadow quad */
-	float* vertices = new float[12 * wall_segments];
+	float* vertices = new float[12 * edges];
 
-	for (uint16_t i = 0; i < wall_segments; i++)
+	for (uint16_t i = 0; i < edges; i++)
 	{
-		// TODO: remove additions...
-		const glm::vec2& wall_vert1 = wall_vertices[i * 2] + glm::vec2(8.0f, 8.0f);
-		const glm::vec2& wall_vert2 = wall_vertices[i * 2 + 1] + glm::vec2(8.0f, 8.0f);
+		const glm::vec2& wall_vert1 = shadow_edges[i * 2];
+		const glm::vec2& wall_vert2 = shadow_edges[i * 2 + 1];
 
 		/* First triangle */
 		vertices[i * 12 + 0] = wall_vert1.x;
@@ -84,7 +83,7 @@ void Light::compute()
 	/* Write the computed shadow vertices into the buffers */
 	glBindVertexArray(shadow.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, shadow.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12 * wall_segments, vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12 * edges, vertices, GL_DYNAMIC_DRAW);
 
 	/* Unbind and delete */
 	glBindVertexArray(0);
@@ -113,7 +112,7 @@ void Light::draw()
 	this->shader.use();
 	this->shader.set_vec4f("color", { 0.0f, 0.0f, 0.0f, 0.0f });
 	this->shader.set_mat4("model", model);
-	glDrawArrays(GL_TRIANGLES, 0, 5 * 6);
+	glDrawArrays(GL_TRIANGLES, 0, edges * 6);
 
 	/* Reconfigure the stencil buffer to be used as a mask */
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
