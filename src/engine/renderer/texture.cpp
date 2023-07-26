@@ -15,7 +15,7 @@ void Texture2D::generate(uint32_t width, uint32_t height, uint8_t* data, int tex
     this->width = width;
     this->height = height;
 
-    glActiveTexture(GL_TEXTURE0 + tex_idx); // TODO: might be irrelevant.
+    glActiveTexture(GL_TEXTURE0 + tex_idx);
 
     // Create the texture:
     glBindTexture(GL_TEXTURE_2D, this->id);

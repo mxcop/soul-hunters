@@ -45,7 +45,7 @@ void Game::Init()
 	ldtk::IntPoint tilemap_size = layer.getGridSize();
 
 	// Set up projection matrix
-	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 2.0f, static_cast<float>(this->width) / 2.0f, -static_cast<float>(this->height) / 2.0f, static_cast<float>(this->height) / 2.0f, 0.0f, 1000.0f);
+	glm::mat4 projection = glm::ortho(-static_cast<float>(this->width) / 1.0f, static_cast<float>(this->width) / 1.0f, -static_cast<float>(this->height) / 1.0f, static_cast<float>(this->height) / 1.0f, 0.0f, 1000.0f);
 
 	// Set the projection
 	renderer.set_projection(projection, "sprite");
@@ -58,6 +58,8 @@ void Game::Init()
 
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
+
+	pos = glm::vec2(-800.019470f * 2, -457.245911f * 2);
 }
 
 bool up = false;

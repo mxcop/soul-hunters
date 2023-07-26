@@ -2,6 +2,7 @@
 premake/*
 !premake5.lua
 build
+premake5.exe
 
 # Visual Studio
 .vs
