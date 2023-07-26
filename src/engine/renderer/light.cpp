@@ -5,10 +5,11 @@
 
 Shader Light::shader;
 
-Light::Light(glm::vec2 pos, float range)
+Light::Light(glm::vec2 pos, float range, float angle)
 {
 	this->pos = pos;
 	this->range = range;
+	this->angle = angle;
 
 	gl_init();
 }
@@ -55,8 +56,9 @@ void Light::compute()
 
 	for (uint16_t i = 0; i < wall_segments; i++)
 	{
-		const glm::vec2& wall_vert1 = wall_vertices[i * 2];
-		const glm::vec2& wall_vert2 = wall_vertices[i * 2 + 1];
+		// TODO: remove additions...
+		const glm::vec2& wall_vert1 = wall_vertices[i * 2] + glm::vec2(8.0f, 8.0f);
+		const glm::vec2& wall_vert2 = wall_vertices[i * 2 + 1] + glm::vec2(8.0f, 8.0f);
 
 		/* First triangle */
 		vertices[i * 12 + 0] = wall_vert1.x;
@@ -128,8 +130,10 @@ void Light::draw()
 
 	/* Draw the light with respect to the shadow mask */
 	this->shader.use();
-	this->shader.set_vec4f("color", { 1.0f, 1.0f, 0.7f, 0.5f });
+	this->shader.set_vec4f("color", { 1.0f, 1.0f, 0.7f, 0.8f });
 	this->shader.set_mat4("model", model);
+	this->shader.set_vec2f("dir", dir);
+	this->shader.set_vec2f("angle", { angle / 2.0f * 0.0174532925f, -angle / 2.0f * 0.0174532925f });
     glDrawArrays(GL_TRIANGLES, 0, 2 * 6);
 
     /* Disable the stencil buffer */
@@ -138,11 +142,6 @@ void Light::draw()
 	/* Unbind the buffers */
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void Light::set_pos(glm::vec2 pos)
-{
-	this->pos = pos;
 }
 
 void Light::set_projection(glm::mat4 projection)

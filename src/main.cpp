@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT);
+    game = new Game(window, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // initialize game
     // ---------------
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 
             // render
             // ------
-            glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             game->render();
 

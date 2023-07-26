@@ -6,25 +6,25 @@
 class Light
 {
 public:
-    Light(glm::vec2 pos, float range);
+    Light(glm::vec2 pos, float range, float angle = 360.0f);
 
     static void setup();
 
     void compute();
     void draw();
 
-    void set_pos(glm::vec2 pos);
-
     /// <summary>
     /// Set the projection matrix of the light source.
     /// </summary>
     void set_projection(glm::mat4 projection);
 
+    glm::vec2 pos = { 0.0f, 0.0f };
+    glm::vec2 dir = { 0.0f, 0.0f };
+
 private:
     static Shader shader;
-
-    glm::vec2 pos = { 0.0f, 0.0f };
     float range = 5.0f;
+    float angle = 360.0f;
 
     struct {
         GLuint vao = 0;
