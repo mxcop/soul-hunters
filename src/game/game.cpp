@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <stdlib.h>
+#include <imgui_widgets.cpp>
 
 #include "LDtkLoader/Project.hpp"
 
@@ -184,28 +185,18 @@ void Game::update(float dt)
 
 void Game::fixed_update() 
 {
-	/* Compute the shadow mask of the test light */
-	// test_light->compute();
-	// test_light2->compute();
 	player_1->fixed_update(gl_window, width, height, shadow_edges);
 
 	if (this->player_2 != nullptr) {
 		this->player_2->fixed_update(gl_window, width, height, shadow_edges);
 	}
+
+	ImGui::Text("Ghosts = %d", Ghost::get_ghosts().size());
 }
 
 void Game::render()
 {
 	// test_map->draw(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
-
-	// test_light2->draw();
-	// test_light->draw();
-
-	/*renderer.draw_sprite(
-		ResourceManager::get_texture("tileset"),
-		glm::vec2(2, 2),
-		glm::vec2(1.0f * 5, 1.0f),
-		rotation);*/
 
 	/* Draw the players */
 	this->player_1->draw(renderer);

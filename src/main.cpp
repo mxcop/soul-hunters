@@ -1,3 +1,7 @@
+#include "imgui.h"
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -33,6 +37,21 @@ int main(int argc, char* argv[])
 
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
     glfwMakeContextCurrent(window);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 460");
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -81,16 +100,29 @@ int main(int argc, char* argv[])
         {
             frameCounter = 0;
 
+            // Start the Dear ImGui frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::Begin("Debug");
+            ImGui::SetWindowFontScale(1.5f);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
             // fixed update
             // ------------
             game->fixed_update();
-
+            
             // render
             // ------
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             game->render();
 
+            ImGui::End();
+            ImGui::Render();
+
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
 
@@ -101,6 +133,12 @@ int main(int argc, char* argv[])
     // ---------------------------------------------------------
     ResourceManager::clear();
 
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }

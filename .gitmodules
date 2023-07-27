@@ -7,3 +7,6 @@
 [submodule "vendor/ldtk-loader"]
 	path = vendor/ldtk-loader
 	url = https://github.com/mxcop/ldtk-loader.git
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/ocornut/imgui.git
