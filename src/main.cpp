@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
-    // --------------------Z
+    // --------------------
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -96,11 +96,10 @@ int main(int argc, char* argv[])
         // -----------------
         game->update(deltaTime);
 
-        if (frameCounter >= (1.0 / TARGET_FPS)) 
+        if (frameCounter >= (1.0 / TARGET_FPS))
         {
             frameCounter = 0;
 
-            // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -108,18 +107,17 @@ int main(int argc, char* argv[])
             ImGui::Begin("Debug");
             ImGui::SetWindowFontScale(1.5f);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            ImGui::End();
 
             // fixed update
             // ------------
             game->fixed_update();
-            
+
             // render
             // ------
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             game->render();
-
-            ImGui::End();
             ImGui::Render();
 
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

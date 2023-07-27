@@ -1,4 +1,5 @@
 #include "player.h"
+#include <imgui.h>
 
 Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
 {
@@ -98,6 +99,11 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 	/* Compute the shadow masks */
 	this->ambient_light.compute(shadow_edges);
 	this->flash_light.compute(shadow_edges);
+
+	ImGui::Begin("Player");
+	ImGui::SetWindowFontScale(1.5f);
+	ImGui::Text("Position: %.1f, %.1f", get_pos().x, get_pos().y);
+	ImGui::End();
 }
 
 void Player::draw(SpriteRenderer& renderer)
