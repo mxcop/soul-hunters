@@ -1,5 +1,5 @@
 #include "ghost.h"
-#include "../engine/vec.h"
+#include "../engine/math/vec.h"
 
 std::vector<Ghost> Ghost::ghosts;
 

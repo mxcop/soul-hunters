@@ -1,7 +1,7 @@
 #include "player.h"
 #include <imgui.h>
 #include "ghost.h"
-#include "../engine/vec.h"
+#include "../engine/math/vec.h"
 
 Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
 {
