@@ -24,8 +24,6 @@ Game::Game(GLFWwindow* gl_window, int width, int height):
 }
 
 Tilemap* test_map;
-Light* test_light;
-Light* test_light2;
 
 Game::~Game()
 {
@@ -108,17 +106,8 @@ void Game::init()
 	// Create a tilemap.
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
-	// Create a light.
-	test_light = new Light({ 0.0f, 0.0f }, 30.0f, 70.0f);
-	test_light->set_projection(this->projection);
-	test_light2 = new Light({ 0.0f, 0.0f }, 10.0f);
-	test_light2->set_projection(this->projection);
-
 	// Create a ghost.
-	for (size_t i = 0; i < 32; i++)
-	{
-		Ghost::make({ rand() % 80, rand() % 40 }, 5);
-	}
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
 }
 
 void Game::key_input(int key, int action) {}
