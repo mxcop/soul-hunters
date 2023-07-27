@@ -1,7 +1,9 @@
 #include "light.h"
-#include "../resource-manager.h"
+
 #include <vector>
 #include <string>
+
+#include "../resource-manager.h"
 
 Shader Light::shader;
 
@@ -28,26 +30,6 @@ void Light::setup()
 	shader = ResourceManager::load_shader(vert_src.c_str(), frag_src.c_str(), nullptr, "light");
 }
 
-// TEMP: for testing.
-//const std::vector<glm::vec2> wall_vertices = {
-//	{ -1.0f, -2.0f },
-//	{  1.0f, -2.0f },
-//
-//	{ -1.0f, 1.0f },
-//	{  1.0f, 1.0f },
-//
-//	{ -1.0f, 3.0f },
-//	{  1.0f, 3.0f },
-//
-//	{ -1.0f, 1.0f },
-//	{ -1.0f, 3.0f },
-//
-//	{  1.0f, 1.0f },
-//	{  1.0f, 3.0f },
-//};
-
-// TODO: pass wall edges into Light::compute.
-// TODO: only compute edges within light range.
 void Light::compute(std::vector<glm::vec2>& shadow_edges)
 {
 	edges = shadow_edges.size() / 2;
