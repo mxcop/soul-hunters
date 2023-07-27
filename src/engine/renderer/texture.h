@@ -16,7 +16,7 @@ class Texture2D
     uint32_t filter_max = GL_NEAREST; /* Filtering mode if texture pixels > screen pixels */
 
 public:
-    uint32_t id = 0;
+    GLuint id = 0;
 
     uint32_t int_fmt = GL_RGB; /* Internal format */
     uint32_t img_fmt = GL_RGB; /* Image format */

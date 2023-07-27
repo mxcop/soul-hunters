@@ -10,47 +10,49 @@ Shader& Shader::use()
 
 bool Shader::compile(const char* vert_src, const char* frag_src, const char* geo_src)
 {
-    // Confirm that both the vertex and fragment shader are not null:
+    /* Don't compile if either the vertex or fragment shader is null */
     if (vert_src == nullptr || frag_src == nullptr) return false;
 
-    unsigned int vert_shader, frag_shader, geo_shader;
+    GLuint vert_shader, frag_shader, geo_shader;
 
-    // Compile vertex shader:
+    /* Compile vertex shader */
     vert_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vert_shader, 1, &vert_src, NULL);
     glCompileShader(vert_shader);
     if (!log_err(vert_shader, "VERTEX")) return false;
 
-    // Compile fragment shader:
+    /* Compile fragment shader */
     frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(frag_shader, 1, &frag_src, NULL);
     glCompileShader(frag_shader);
     if (!log_err(frag_shader, "FRAGMENT")) return false;
 
     if (geo_src != nullptr) {
-        // Compile geometry shader:
+        /* Compile geometry shader */
         geo_shader = glCreateShader(GL_GEOMETRY_SHADER);
         glShaderSource(geo_shader, 1, &geo_src, NULL);
         glCompileShader(geo_shader);
         if (!log_err(geo_shader, "GEOMETRY")) return false;
     }
 
-    // Create the shader program.
+    /* Create the shader program */
     this->id = glCreateProgram();
 
-    // Attach the compiled shaders:
+    /* Attach the compiled shaders */
     glAttachShader(this->id, vert_shader);
     glAttachShader(this->id, frag_shader);
     if (geo_src != nullptr) {
         glAttachShader(this->id, geo_shader);
     }
 
-    // Link the shader program.
+    /* Link the shader program */
     glLinkProgram(this->id);
     if (!log_err(this->id, "PROGRAM")) return false;
 
-    // Finally, delete the shaders once linked.
-    // Now they're stored on the GPU.
+    /*
+        Finally, delete the shaders once linked.
+        Now they're stored on the GPU.
+    */
     glDeleteShader(vert_shader);
     glDeleteShader(frag_shader);
     if (geo_src != nullptr) {
