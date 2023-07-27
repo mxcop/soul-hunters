@@ -20,6 +20,8 @@ public:
     /// </summary>
     void set_projection(glm::mat4 projection);
 
+    float get_range() { return this->range; };
+
     glm::vec2 pos = { 0.0f, 0.0f };
     glm::vec2 dir = { 0.0f, 0.0f };
 

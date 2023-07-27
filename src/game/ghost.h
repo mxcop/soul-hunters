@@ -17,6 +17,10 @@ public:
     static std::vector<Ghost>& get_ghosts() { return ghosts; };
     static bool deactivate(int id);
 
+    glm::vec2 get_pos() { return this->pos; };
+
+    float hp = 5.0f;
+
 private:
     Ghost(glm::vec2 pos, float hp, int id);
 
@@ -26,7 +30,6 @@ private:
     bool is_active = true;
 
     glm::vec2 pos = {};
-    float hp = 5.0f;
     float time = 0.0f;
     bool move_right;
 

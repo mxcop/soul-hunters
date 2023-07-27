@@ -60,7 +60,8 @@ Ghost::Ghost(glm::vec2 pos, float hp, int id)
 	this->hp = hp;
 	this->id = id;
 
-	move_right = rand() % 2 == 0;
+	//move_right = rand() % 2 == 0;
+	move_right = false;
 	speed = 2.0f + rand() % 8;
 }
 
@@ -90,20 +91,22 @@ void Ghost::update(glm::vec2 player1, glm::vec2 player2, float dt)
 	float dist1 = dist(this->pos, player1);
 	float dist2 = dist(this->pos, player2);
 
-	if (dist1 < 0.1f || dist2 < 0.1f) {
+	/*if (dist1 < 0.1f || dist2 < 0.1f) {
 		deactivate(id);
+		return;
+	}*/
 
-		Ghost::make({ rand() % 80, rand() % 40 }, 5);
-		Ghost::make({ rand() % 80, rand() % 40 }, 5);
-
+	if (this->hp < 5) {
+		deactivate(id);
 		return;
 	}
 
 	glm::vec2 dir = from_to(dist1 < dist2 ? player1 : player2, this->pos);
-	glm::vec2 side = move_right ? glm::vec2(-dir.y, dir.x) : glm::vec2(dir.y, -dir.x);
+	//glm::vec2 side = move_right ? glm::vec2(-dir.y, dir.x) : glm::vec2(dir.y, -dir.x);
 
-	this->pos += dir * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
-	this->pos += side * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
+	//this->pos += dir * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
+	this->pos += dir * (this->speed * dt);
+	//this->pos += side * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
 }
 
 void Ghost::draw(SpriteRenderer& renderer) const
