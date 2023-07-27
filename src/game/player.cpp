@@ -60,13 +60,17 @@ void Player::update(float dt)
 	std::vector<Ghost>& ghosts = Ghost::get_ghosts();
 	for (Ghost& ghost : ghosts)
 	{
-		if (vec::dist(center, ghost.get_pos()) < flashlight_range) {
-			glm::vec2 ghost_dir = vec::normalize(current_pos - ghost.get_pos());
+		if (vec::dist(center, ghost.get_pos()) >= flashlight_range) {
+			continue;
+		}
 
-			float angle = std::acos(ghost_dir.x * -this->pointing_dir.x + ghost_dir.y * -this->pointing_dir.y);
-			bool in_range = angle < light_angle;
+		/* Check if the ghost is within the flashlight angle */
+		glm::vec2 ghost_dir = vec::normalize(current_pos - ghost.get_pos());
+		float angle = std::acos(ghost_dir.x * -this->pointing_dir.x + ghost_dir.y * -this->pointing_dir.y);
+		bool in_range = angle < light_angle;
 
-			if (in_range) ghost.hp = 0.0f;
+		if (in_range) {
+			ghost.hp = 0.0f;
 		}
 	}
 }
