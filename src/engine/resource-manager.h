@@ -12,7 +12,6 @@ class ResourceManager
 {
 public:
     // Resource storage
-    static std::map<std::string, Shader> shaders;
     static std::map<std::string, Texture2D> textures;
 
     /// <summary>
@@ -25,13 +24,6 @@ public:
     /// <returns>Shader Object</returns>
     static Shader load_shader(const char* v_shader_file, const char* f_shader_file, const char* g_shader_file, std::string name);
     
-    /// <summary>
-    /// Retrieves a shader
-    /// </summary>
-    /// <param name="name">- Name</param>
-    /// <returns>Shader Object</returns>
-    static Shader get_shader(std::string name);
-
     /// <summary>
     /// Loads and generates a texture from a file
     /// </summary>
