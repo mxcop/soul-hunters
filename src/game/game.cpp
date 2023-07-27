@@ -107,10 +107,7 @@ void Game::init()
 	test_map = new Tilemap(tiles_vector, ResourceManager::get_texture("tileset"), 5, tilemap_size.x, tilemap_size.y);
 	
 	// Create a ghost.
-	for (size_t i = 0; i < 5; i++)
-	{
-		Ghost::make({ rand() % 80, rand() % 40 }, 5);
-	}
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
 }
 
 void Game::key_input(int key, int action) {}

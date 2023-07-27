@@ -8,6 +8,7 @@ class Light
 {
 public:
     Light() {};
+    /// <param name="range">The diameter of the light.</param>
     Light(glm::vec2 pos, float range, float angle = 360.0f);
 
     static void setup();

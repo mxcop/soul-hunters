@@ -31,7 +31,12 @@ public:
 
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
 private:
-	const float speed = 10.0f; 
+	const float speed = 10.0f;
+
+	/// Distance the light of the flashlight travels.
+	const float flashlight_range = 15.0f;
+	/// Angle of the flashlight in degrees.
+	const float flashlight_angle = 70.0f;
 	
 	glm::mat4 projection = {};
 	Collider* collider = nullptr;
@@ -41,6 +46,8 @@ private:
 	Light ambient_light;
 
 	glm::vec2 initial_pos = {};
+	glm::vec2 pointing_dir = {};
+
 	bool is_host = true;
 	int cid = 0u;
 	bool* keys = nullptr;

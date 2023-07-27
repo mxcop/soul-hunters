@@ -1,6 +1,7 @@
 #include "player.h"
 #include <imgui.h>
 #include "ghost.h"
+#include "../engine/vec.h"
 
 Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
 {
@@ -16,18 +17,13 @@ Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid,
 
 	this->collider = &Collider::make(this->initial_pos, {2.0f, 2.0f});
 
-	this->flash_light = Light({ 0.0f, 0.0f }, 30.0f, 70.0f);
+	this->flash_light = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
 	this->ambient_light = Light({ 0.0f, 0.0f }, 10.0f);
-}
-
-glm::vec2 normalize(glm::vec2 v) 
-{
-	float mag = sqrt(v.x * v.x + v.y * v.y);
-	return v / std::max(0.000001f, mag);
 }
 
 void Player::update(float dt)
 {
+	/* Move the player using user input */
 	glm::vec2 vel = { 0, 0 };
 
 	if (this->is_host)
@@ -39,7 +35,6 @@ void Player::update(float dt)
 	}
 	else
 	{
-		// Get the state of the axes
 		int axes_count;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
 		
@@ -56,53 +51,36 @@ void Player::update(float dt)
 
 	this->collider->set_pos(this->collider->get_pos() + vel * dt * collision_time);
 
-
+	/* Check if any ghosts are within the player's flashlight range */
 	glm::vec2 current_pos = { this->collider->get_pos() };
 	glm::vec2 center = { (current_pos + 1.0f) };
 	
-	glm::vec2 mouse_dir = normalize(vel);
-
-	float light_angle = glm::radians(35.0f);
+	float light_angle = glm::radians(flashlight_angle / 2.0f);
 	
 	std::vector<Ghost>& ghosts = Ghost::get_ghosts();
-
-	/*double enemy_angle;
-	double start_angle = glm::radians(35.0f);
-	double end_angle = glm::radians(70.0f);*/
-
-
 	for (Ghost& ghost : ghosts)
 	{
-		//// Check if the ghost is inside the circle
-		//if (((ghost.get_pos().x - center.x) * (ghost.get_pos().x - center.x) + (ghost.get_pos().y - center.y) * (ghost.get_pos().y - center.y)) < this->flash_light.get_range())
-		//{
-		//	enemy_angle = atan2f(ghost.get_pos().y - center.y, ghost.get_pos().x - center.x);
+		if (vec::dist(center, ghost.get_pos()) < flashlight_range) {
+			glm::vec2 ghost_dir = vec::normalize(current_pos - ghost.get_pos());
 
-		//	if (enemy_angle >= start_angle && enemy_angle <= end_angle)
-		//	{
-		//		ghost.hp = 0.0f;
-		//	}
-		//}
+			float angle = std::acos(ghost_dir.x * -this->pointing_dir.x + ghost_dir.y * -this->pointing_dir.y);
+			bool in_range = angle < light_angle;
 
-		glm::vec2 ghost_dir = normalize(current_pos - ghost.get_pos());
-
-		float angle = std::acos(ghost_dir.x * mouse_dir.x + ghost_dir.y * mouse_dir.y);
-		bool in_range = angle < light_angle;
-
-		if (in_range)
-			ghost.hp = 0.0f;
+			if (in_range) ghost.hp = 0.0f;
+		}
 	}
 }
 
 glm::vec3 view_to_world(int win_w, int win_h, int mouse_x, int mouse_y, glm::mat4 proj) {
-	// NORMALISED DEVICE SPACE
+	// Normalised device space
 	double x = 2.0 * mouse_x / win_w - 1;
 	double y = 2.0 * mouse_y / win_h - 1;
-	// HOMOGENEOUS SPACE
+
+	// Homogeneous space
 	glm::vec4 screenPos = glm::vec4(x, -y, -1.0f, 1.0f);
-	// Projection/Eye Space
-	glm::mat4 ProjectView = proj;
-	glm::mat4 viewProjectionInverse = inverse(ProjectView);
+
+	// Projection space
+	glm::mat4 viewProjectionInverse = inverse(proj);
 	glm::vec4 worldPos = viewProjectionInverse * screenPos;
 	return glm::vec3(worldPos);
 }
@@ -118,26 +96,18 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 		glfwGetCursorPos(gl_window, &mousex, &mousey);
 
 		glm::vec2 mouse = view_to_world(win_w, win_h, mousex, mousey, this->projection);
-
 		glm::vec2 light_dir = mouse - flash_light.pos;
 
-		double len = sqrt(light_dir.x * light_dir.x + light_dir.y * light_dir.y);
-		light_dir = { light_dir.x / len, light_dir.y / len };
-
-		flash_light.dir = light_dir;
+		this->pointing_dir = flash_light.dir = vec::normalize(light_dir);
 	}
 	else 
 	{
-		// Get the state of the axes
 		int axes_count;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
 
 		glm::vec2 light_dir = { axes[RIGHT_STICK_X], -axes[RIGHT_STICK_Y] };
 
-		double len = sqrt(light_dir.x * light_dir.x + light_dir.y * light_dir.y);
-		light_dir = { light_dir.x / len, light_dir.y / len };
-
-		flash_light.dir = light_dir;
+		this->pointing_dir = flash_light.dir = vec::normalize(light_dir);
 	}
 
 	/* Compute the shadow masks */
