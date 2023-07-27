@@ -8,7 +8,7 @@ Shader Tilemap::shader;
 Tilemap::Tilemap(const std::vector<ldtk::Tile>& data, Texture2D tileset, uint8_t tiles, uint16_t width, uint16_t height)
 {
 	this->tileset = tileset;
-	tileset_len = tiles;
+	this->tileset_len = tiles;
 	this->width = width;
 	this->height = height;
 
@@ -34,25 +34,25 @@ Tilemap::Tilemap(const std::vector<ldtk::Tile>& data, Texture2D tileset, uint8_t
 
 void Tilemap::gl_init() 
 {
-	// Init objects
+	/* Init objects */
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 
 	float vertices[] =
 	{
-		/*   x    */ /*    y    */
-		0.0f,			height,
-		width,			height,
-		width,			0.0f,
-		0.0f,			0.0f
+		/* x , y */
+		0.0f , height,
+		width, height,
+		width, 0.0f,
+		0.0f , 0.0f
 	};
 
-	// Upload the vertices to the buffer
+	/* Upload the vertices to the buffer */
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	// Init more objects
+	/* Init more objects */
 	glGenBuffers(1, &ebo);
 
 	GLuint indices[] =
@@ -61,11 +61,11 @@ void Tilemap::gl_init()
 		2, 3, 0
 	};
 
-	// Upload the indices (elements) to the buffer
+	/* Upload the indices (elements) to the buffer */
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// Pos atrribute
+	/* Position atrribute */
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 }
@@ -94,8 +94,8 @@ void Tilemap::setup()
 
 	/* Set the map size */
 	shader.use();
-	shader.set_int("tileset", 0); // GL_TEXTURE0
-	shader.set_int("tile_data", 1); // GL_TEXTURE1
+	shader.set_int("tileset"  , 0/* GL_TEXTURE0 */);
+	shader.set_int("tile_data", 1/* GL_TEXTURE1 */);
 }
 
 void Tilemap::set_projection(glm::mat4 projection)
@@ -109,24 +109,24 @@ void Tilemap::draw(glm::vec2 position, glm::vec2 size)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-	// Compute the model matrix:
+	/* Compute the model matrix */
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
 
-	// Set the uniforms within the shader:
+	/* Set the uniforms for the tilemap shader */
 	this->shader.use();
 	shader.set_float("tileset_size", static_cast<float>(tileset_len));
 	shader.set_vec2f("map_size", glm::vec2(width, height) * 1.0f);
 	this->shader.set_mat4("model", model);
 
-	// Bind the textures:
+	/* Bind the textures */
 	tileset  .bind(0/* GL_TEXTURE0 */);
 	tile_data.bind(1/* GL_TEXTURE1 */);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	// Unbind the GL buffers:
+	/* Cleanup */
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

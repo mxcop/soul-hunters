@@ -27,7 +27,7 @@ public:
 	int width, height;
 
 	// Constructor/Destructor
-	Game(int width, int height);
+	Game(GLFWwindow* gl_window, int width, int height);
 	~Game();
 
 	/// <summary>
@@ -61,9 +61,13 @@ public:
 	void render();
 
 private:
+	GLFWwindow* gl_window = nullptr;
 	SpriteRenderer renderer;
 	Player* player_1 = nullptr;
 	Player* player_2 = nullptr;
+	glm::mat4 projection = {};
+
+	std::vector<glm::vec2> shadow_edges;
 
 	int joysticks[GLFW_JOYSTICK_LAST + 1];
 	int joystick_count = 0;

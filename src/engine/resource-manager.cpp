@@ -9,18 +9,11 @@
 
 // Instantiate static variables
 std::map<std::string, Texture2D> ResourceManager::textures;
-std::map<std::string, Shader> ResourceManager::shaders;
 
 
 Shader ResourceManager::load_shader(const char* v_shader_code, const char* f_shader_code, const char* g_shader_code, std::string name)
 {
-    shaders[name] = load_shader_from_file(v_shader_code, f_shader_code, g_shader_code);
-    return shaders[name];
-}
-
-Shader ResourceManager::get_shader(std::string name)
-{
-    return shaders[name];
+    return load_shader_from_file(v_shader_code, f_shader_code, g_shader_code);
 }
 
 Texture2D ResourceManager::load_texture(const char* file, bool alpha, std::string name)
@@ -36,9 +29,6 @@ Texture2D ResourceManager::get_texture(std::string name)
 
 void ResourceManager::clear()
 {
-    // Delete all shaders	
-    for (auto iter : shaders)
-        glDeleteProgram(iter.second.id);
     // Delete all textures
     for (auto iter : textures)
         glDeleteTextures(1, &iter.second.id);

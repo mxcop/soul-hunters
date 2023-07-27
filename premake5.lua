@@ -31,6 +31,7 @@ project "Game"
         "vendor/glad/include/",
         "vendor/glm/",
         "vendor/ldtk-loader/include/",
+        "vendor/imgui/",
     }
     
     -- Project source files. (.cpp & .h)
@@ -41,7 +42,8 @@ project "Game"
         "GLFW",
         "GLAD",
         "GLM",
-        "LDTK"
+        "LDTK",
+        "ImGui"
     }
 
     filter "system:linux"
@@ -59,3 +61,4 @@ project "Game"
     include "vendor/glad.lua"
     include "vendor/glm.lua"
     include "vendor/ldtk.lua"
+    include "vendor/imgui.lua"

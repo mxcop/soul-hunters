@@ -9,3 +9,6 @@ build
 *.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
+
+# ImGui
+imgui.ini
