@@ -28,6 +28,7 @@ public:
 
     ~Lake() {
         delete[] data;
+        delete[] status;
     }
 
     /**
