@@ -43,7 +43,7 @@ void Game::init()
 	Light::setup();
 
 	Collider::reserve_colliders(128);
-	Ghost::reserve_ghosts(128);
+	Ghost::ghosts.reserve(128);
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -108,6 +108,10 @@ void Game::init()
 	
 	// Create a ghost.
 	Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	Ghost::make({ rand() % 80, rand() % 40 }, 5);
 }
 
 void Game::key_input(int key, int action) {}
@@ -165,11 +169,13 @@ void Game::update(float dt)
 	}
 
 	/* Update ghosts */
-	Ghost::update_all(
-		this->player_1->get_pos(),
-		this->player_2 != nullptr ? this->player_2->get_pos() : glm::vec2(),
-		dt
-	);
+	Ghost::ghosts.iterate([&](Ghost& ghost) {
+		ghost.update(
+			player_1->get_pos(), 
+			player_2 != nullptr ? player_2->get_pos() : glm::vec2(), 
+			dt
+		);
+	});
 }
 
 void Game::fixed_update() 
@@ -180,7 +186,8 @@ void Game::fixed_update()
 		this->player_2->fixed_update(gl_window, width, height, shadow_edges);
 	}
 
-	ImGui::Text("Ghosts = %d", Ghost::get_ghosts().size());
+	ImGui::Text("Ghost Size     = %d", Ghost::ghosts.get_size());
+	ImGui::Text("Ghost Capacity = %d", Ghost::ghosts.get_capacity());
 }
 
 void Game::render()
@@ -194,5 +201,8 @@ void Game::render()
 		this->player_2->draw(renderer);
 	}
 
-	Ghost::draw_all(renderer);
+	/* Draw the ghosts */
+	Ghost::ghosts.iterate([&](Ghost& ghost) {
+		ghost.draw(renderer);
+	});
 }
