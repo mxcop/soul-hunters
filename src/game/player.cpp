@@ -1,6 +1,5 @@
 #include "player.h"
 #include <imgui.h>
-#include "ghost.h"
 #include "../engine/math/vec.h"
 
 Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
@@ -60,17 +59,10 @@ void Player::update(float dt)
 	std::vector<Ghost>& ghosts = Ghost::get_ghosts();
 	for (Ghost& ghost : ghosts)
 	{
-		if (vec::dist(center, ghost.get_pos()) >= flashlight_range) {
-			continue;
-		}
-
-		/* Check if the ghost is within the flashlight angle */
-		glm::vec2 ghost_dir = vec::normalize(current_pos - ghost.get_pos());
-		float angle = std::acos(ghost_dir.x * -this->pointing_dir.x + ghost_dir.y * -this->pointing_dir.y);
-		bool in_range = angle < light_angle;
-
-		if (in_range) {
+		// Check if the ghost is within range of the first player
+		if (light_range_check(ghost) && this->is_host) {
 			ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
+			ghost.hp = std::max(0.0f, ghost.hp - dt * 1.5f);
 		}
 	}
 }
@@ -122,6 +114,12 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 	ImGui::SetWindowFontScale(1.5f);
 	ImGui::Text("Position: %.1f, %.1f", get_pos().x, get_pos().y);
 	ImGui::End();
+
+	std::vector<Ghost>& ghosts = Ghost::get_ghosts();
+	ImGui::Begin("Ghost");
+	ImGui::SetWindowFontScale(2.0f);
+	ImGui::Text("HP: %.1f", ghosts.front().hp);
+	ImGui::End();
 }
 
 void Player::draw(SpriteRenderer& renderer)
@@ -145,4 +143,23 @@ void Player::set_projection(glm::mat4 projection)
 	this->projection = projection;
 	this->flash_light.set_projection(projection);
 	this->ambient_light.set_projection(projection);
+}
+
+bool Player::light_range_check(Ghost& ghost)
+{
+	/* Check if any ghosts are within the player's flashlight range */
+	glm::vec2 current_pos = { this->collider->get_pos() };
+	glm::vec2 center = { (current_pos + 1.0f) };
+
+	float light_angle = glm::radians(flashlight_angle / 2.0f);
+	
+	if (vec::dist(center, ghost.get_pos()) >= flashlight_range) {
+		return false;
+	}
+
+	/* Check if the ghost is within the flashlight angle */
+	glm::vec2 ghost_dir = vec::normalize(current_pos - ghost.get_pos());
+	float angle = std::acos(ghost_dir.x * -this->pointing_dir.x + ghost_dir.y * -this->pointing_dir.y);
+
+	return angle < light_angle;
 }

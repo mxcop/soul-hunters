@@ -166,8 +166,8 @@ void Game::update(float dt)
 
 	/* Update ghosts */
 	Ghost::update_all(
-		this->player_1->get_pos(),
-		this->player_2 != nullptr ? this->player_2->get_pos() : glm::vec2(),
+		this->player_1,
+		this->player_2,
 		dt
 	);
 }

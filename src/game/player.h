@@ -7,6 +7,7 @@
 #include "glm/glm.hpp"
 
 #include "collider.h"
+#include "ghost.h"
 
 #include "../engine/renderer/texture.h"
 #include "../engine/renderer/sprite-renderer.h"
@@ -25,11 +26,13 @@ public:
 	void set_cid(int cid);
 
 	/// <summary>
-	/// Set the projection matrix of the tilemap.
+	/// Set the projection matrix of the player.
 	/// </summary>
 	void set_projection(glm::mat4 projection);
 
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
+
+	bool light_range_check(Ghost& ghost);
 private:
 	const float speed = 10.0f;
 
