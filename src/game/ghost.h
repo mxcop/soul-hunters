@@ -6,9 +6,8 @@
 #include "../engine/renderer/texture.h"
 #include "../engine/renderer/sprite-renderer.h"
 
-class Ghost {
-    float speed = 3.0f;
-
+class Ghost 
+{
 public:
     static void reserve_ghosts(size_t num) { ghosts.reserve(num); };
 	static bool make(glm::vec2 pos, float hp);
@@ -19,6 +18,7 @@ public:
 
     glm::vec2 get_pos() { return this->pos; };
 
+    float speed = 3.0f;
     float hp = 5.0f;
 
 private:

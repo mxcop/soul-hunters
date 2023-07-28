@@ -78,11 +78,11 @@ void Ghost::update(glm::vec2 player1, glm::vec2 player2, float dt)
 		return;
 	}*/
 
-	if (this->hp <= 0.0f) {
-		deactivate(id);
-		Ghost::make({ rand() % 80, rand() % 40 }, 5);
-		return;
-	}
+	//if (this->hp < 5.0f) {
+	//	this->speed = std::max(0.0f, this->speed - dt);
+	//	//Ghost::make({ rand() % 80, rand() % 40 }, 5);
+	//	//return;
+	//}
 
 	glm::vec2 dir = vec::from_to(dist1 < dist2 ? player1 : player2, this->pos);
 	//glm::vec2 side = move_right ? glm::vec2(-dir.y, dir.x) : glm::vec2(dir.y, -dir.x);

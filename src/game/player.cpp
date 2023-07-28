@@ -70,7 +70,7 @@ void Player::update(float dt)
 		bool in_range = angle < light_angle;
 
 		if (in_range) {
-			ghost.hp = 0.0f;
+			ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
 		}
 	}
 }
