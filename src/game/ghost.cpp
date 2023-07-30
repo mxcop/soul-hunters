@@ -31,7 +31,7 @@ bool Ghost::make(glm::vec2 pos, float hp)
 void Ghost::update_all(Player* player1, Player* player2, float dt)
 {
 	for (Ghost& ghost : ghosts) {
-		if (ghost.is_active) ghost.update(*player1, *player2, dt);
+		if (ghost.is_active) ghost.update(player1, player2, dt);
 	}
 }
 
@@ -61,38 +61,61 @@ Ghost::Ghost(glm::vec2 pos, float hp, int id)
 {
 	this->pos = pos;
 	this->hp = hp;
+	this->max_hp = hp;
 	this->id = id;
 
-	//move_right = rand() % 2 == 0;
-	move_right = false;
-	speed = 2.0f + rand() % 8;
+	speed = 3.0f + rand() % 4;
 }
 
-void Ghost::update(Player& player1, Player& player2, float dt)
+void Ghost::update(Player* player1, Player* player2, float dt)
 {
-	time += dt;
+	if (player2 == nullptr) return;
 
-	float dist1 = vec::dist(this->pos, player1.get_pos());
-	float dist2 = vec::dist(this->pos, player2.get_pos());
+	/* Animate */
+	this->anim_timer += dt;
+	if (this->anim_timer > std::min(0.2f, this->anim_delay / this->hp)) {
+		this->frame += 1;
+		this->anim_timer = 0.0f;
 
-	if (this->hp == 0.0f && player2.light_range_check(*this))
-	{
-		this->speed = speed + dt;
-		glm::vec2 dir = vec::from_to(player2.get_pos(), this->pos);
-		this->pos += dir * (this->speed * dt);
-
-		if (this->pos == player2.get_pos()) this->deactivate(id);
+		if (this->frame > this->frames) this->frame = 0;
 	}
 
-	glm::vec2 dir = vec::from_to(dist1 < dist2 ? player1.get_pos() : player2.get_pos(), this->pos);
-	//glm::vec2 side = move_right ? glm::vec2(-dir.y, dir.x) : glm::vec2(dir.y, -dir.x);
+	float dist1 = vec::dist(this->pos, player1->get_pos());
+	float dist2 = vec::dist(this->pos, player2->get_pos());
 
-	//this->pos += dir * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
-	this->pos += dir * (this->speed * dt);
-	//this->pos += side * (this->speed * (1.0f + std::sin(time * 5.0f) * 4.0f)) * dt;
+	/* Suck it */
+	if (this->hp <= 0.0f && player2->light_range_check(*this))
+	{
+		this->speed = speed + dt;
+		glm::vec2 dir = vec::from_to(player2->get_pos(), this->pos);
+		this->pos += dir * (this->speed * dt);
+
+		if (vec::dist(this->pos, player2->get_pos()) < 0.5f) {
+			this->deactivate(id);
+			Ghost::make({ rand() % 80, rand() % 40 }, 5);
+			Ghost::make({ rand() % 80, rand() % 40 }, 5);
+		}
+
+		return;
+	}
+	
+	/* Get movement direction */
+	glm::vec2 dir = vec::from_to(dist1 < dist2 ? player1->get_pos() : player2->get_pos(), this->pos);
+	this->flip_x = dir.x < 0.0f;
+
+	this->pos += dir * ((this->speed * (hp / max_hp)) * dt);
 }
 
 void Ghost::draw(SpriteRenderer& renderer) const
 {
-	renderer.draw_sprite(ResourceManager::get_texture("ghost"), this->pos, { 2.0f, 2.0f });
+	renderer.draw_sprite(
+		ResourceManager::get_texture(hp <= 0.0f ? "flashed ghost" : "ghost"), 
+		this->pos + glm::vec2(0.8f, 1.0f),
+		{ 1.6f, 2.0f }, 
+		0.0f, 
+		true,
+		this->flip_x,
+		frame, 
+		frames
+	);
 }

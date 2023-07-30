@@ -62,6 +62,8 @@ public:
 
 private:
 	GLFWwindow* gl_window = nullptr;
+	Texture2D game_title;
+	Texture2D game_subtext;
 	SpriteRenderer renderer;
 	Player* player_1 = nullptr;
 	Player* player_2 = nullptr;

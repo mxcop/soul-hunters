@@ -43,7 +43,7 @@ void Game::init()
 	Light::setup();
 
 	Collider::reserve_colliders(128);
-	Ghost::reserve_ghosts(128);
+	Ghost::reserve_ghosts(256);
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
@@ -91,15 +91,23 @@ void Game::init()
 	
 	// Load texture
 	ResourceManager::load_texture(relative_path("./public/test/simplified/Level_0/_composite.png").c_str(), true, "test");
-	ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor");
+	ResourceManager::load_texture(relative_path("./public/player1.png").c_str(), true, "player1");
+	ResourceManager::load_texture(relative_path("./public/player2.png").c_str(), true, "player2");
+	ResourceManager::load_texture(relative_path("./public/player-hand.png").c_str(), true, "hand");
+	ResourceManager::load_texture(relative_path("./public/player-vacuum.png").c_str(), true, "vacuum");
+	ResourceManager::load_texture(relative_path("./public/player-flashlight.png").c_str(), true, "flashlight");
 	ResourceManager::load_texture(relative_path("./public/test-tileset.png").c_str(), true, "tileset");
-	ResourceManager::load_texture(relative_path("./public/ghost.png").c_str(), true, "ghost");
+	ResourceManager::load_texture(relative_path("./public/ghost-final.png").c_str(), true, "ghost");
+	ResourceManager::load_texture(relative_path("./public/flashed-ghost.png").c_str(), true, "flashed ghost");
 
-	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), std::nullopt, this->keys);
+	game_title = ResourceManager::load_texture(relative_path("./public/game-title.png").c_str(), true, "game title");
+	game_subtext = ResourceManager::load_texture(relative_path("./public/game-subtext.png").c_str(), true, "game subtext");
+
+	this->player_1 = new Player({ 0.0f, 0.0f }, ResourceManager::get_texture("player1"), ResourceManager::get_texture("hand"), ResourceManager::get_texture("flashlight"), std::nullopt, this->keys);
 	this->player_1->set_projection(this->projection);
 
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == 1) {
-		this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), GLFW_JOYSTICK_1, this->keys);
+		this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::get_texture("player2"), ResourceManager::get_texture("hand"), ResourceManager::get_texture("vacuum"), GLFW_JOYSTICK_1, this->keys);
 		this->player_2->set_projection(this->projection);
 	}
 
@@ -121,7 +129,7 @@ void Game::joystick_callback(int jid, int event)
 			this->player_2->set_cid(jid);
 		}
 		else {
-			this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::load_texture(relative_path("./public/awesomeface.png").c_str(), true, "bor"), jid, this->keys);
+			this->player_2 = new Player({ 0.5f, 0.5f }, ResourceManager::get_texture("player2"), ResourceManager::get_texture("hand"), ResourceManager::get_texture("vacuum"), jid, this->keys);
 			this->player_2->set_projection(this->projection);
 		}
 	}

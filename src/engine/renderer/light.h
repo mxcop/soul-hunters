@@ -9,8 +9,6 @@ class Light
     static Shader shader;
 
     /// Diameter of the light source.
-    float range = 5.0f;
-    float angle = 360.0f;
     int edges = 0;
 
     struct {
@@ -43,7 +41,9 @@ public:
     /// </summary>
     void set_projection(glm::mat4 projection);
 
-    float get_range() { return this->range; };
+    // float get_range() { return this->range; };
+    float range = 5.0f;
+    float angle = 360.0f;
 
     glm::vec2 pos = { 0.0f, 0.0f };
     glm::vec2 dir = { 0.0f, 0.0f };

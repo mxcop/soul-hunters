@@ -2,31 +2,34 @@
 #include <imgui.h>
 #include "../engine/math/vec.h"
 
-Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys)
+Player::Player(glm::vec2 initial_pos, Texture2D texture, Texture2D hand, Texture2D tool, std::optional<int> cid, bool* keys)
 {
 	this->initial_pos = initial_pos;
 	this->texture = texture;
-	
+	this->hand = hand;
+	this->tool = tool;
+	this->keys = keys;
+	this->collider = &Collider::make(this->initial_pos, { 1.5f, 1.5f });
+	this->ambient_light = Light({ 0.0f, 0.0f }, 10.0f);
+	this->ambient_light.color = { 1.0f, 1.0f, 0.7f, 0.8f };
+
 	if (cid.has_value())
 	{
 		this->is_host = false;
 		this->cid = cid.value();
-		this->flash_light = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
-		this->flash_light.color = {0.0f, 0.0f, 0.0f, 0.4f};
+		this->flashlight = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
+		this->flashlight.color = { 0.8f, 0.8f, 0.8f, 0.8f};
+		return;
 	}
-	this->keys = keys;
-
-	this->collider = &Collider::make(this->initial_pos, {2.0f, 2.0f});
-
-	this->flash_light = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
-	this->flash_light.color = { 1.0f, 1.0f, 0.7f, 0.8f };
-	this->ambient_light = Light({ 0.0f, 0.0f }, 10.0f);
+	
+	this->flashlight = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
+	this->flashlight.color = { 1.0f, 1.0f, 0.7f, 0.8f };
 }
 
 void Player::update(float dt)
 {
 	/* Move the player using user input */
-	glm::vec2 vel = { 0, 0 };
+	glm::vec2 vel = { 0.0f, 0.0f };
 
 	if (this->is_host)
 	{
@@ -39,11 +42,26 @@ void Player::update(float dt)
 	{
 		int axes_count;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
-		
+
 		vel.x = axes[LEFT_STICK_X];
 		vel.y = -axes[LEFT_STICK_Y];
 		vel *= speed;
 	}
+
+	this->anim_timer += dt;
+
+	if (vel != glm::vec2(0.0f, 0.0f))
+	{
+		this->flip_x = vel.x < 0.0f;
+		if (this->anim_timer > this->anim_delay) {
+			this->frame += 1;
+			this->anim_timer = 0.0f;
+
+			if (this->frame > this->frames) this->frame = 0;
+		}
+	}
+	else this->frame = 0;
+
 	glm::vec2 collision_time = {};
 
 	this->collider->set_vel({ vel.x * dt, 0.0f });
@@ -64,8 +82,12 @@ void Player::update(float dt)
 	{
 		// Check if the ghost is within range of the first player
 		if (light_range_check(ghost) && this->is_host) {
-			ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
+			// ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
 			ghost.hp = std::max(0.0f, ghost.hp - dt * 1.5f);
+		}
+		if (current_pos == ghost.get_pos()) {
+			Player::hp -= 0.5f;
+			ghost.hp = 0.0f;
 		}
 	}
 }
@@ -87,17 +109,27 @@ glm::vec3 view_to_world(int win_w, int win_h, int mouse_x, int mouse_y, glm::mat
 void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vector<glm::vec2>& shadow_edges)
 {
 	/* Move the lights */
-	flash_light.pos = this->get_pos() + glm::vec2(1.0f, 1.0f);
-	ambient_light.pos = flash_light.pos;
+	flashlight.pos = this->get_pos() + glm::vec2((this->flip_hand ? -0.875f : 0.875f) + 0.75f, 0.5f);
+	ambient_light.pos = this->get_pos() + glm::vec2(0.75f, 0.75f);
+
+	//int state = glfwGetMouseButton(gl_window, GLFW_MOUSE_BUTTON_LEFT);
+	//if (this->is_host && state == GLFW_PRESS)
+	//{
+	//	flashlight.range = flashlight_range * 4.0f;
+	//	flashlight.angle = flashlight_angle * 2.0f;
+	//}
 
 	if (is_host) {
 		double mousex, mousey;
 		glfwGetCursorPos(gl_window, &mousex, &mousey);
 
 		glm::vec2 mouse = view_to_world(win_w, win_h, mousex, mousey, this->projection);
-		glm::vec2 light_dir = mouse - flash_light.pos;
+		glm::vec2 light_dir = mouse - flashlight.pos;
+		glm::vec2 mouse_dir = mouse - this->get_pos();
 
-		this->pointing_dir = flash_light.dir = vec::normalize(light_dir);
+		this->pointing_dir = flashlight.dir = vec::normalize(light_dir);
+
+		this->flip_hand = mouse_dir.x < 0.0f;
 	}
 	else 
 	{
@@ -106,12 +138,14 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 
 		glm::vec2 light_dir = { axes[RIGHT_STICK_X], -axes[RIGHT_STICK_Y] };
 
-		this->pointing_dir = flash_light.dir = vec::normalize(light_dir);
+		this->pointing_dir = flashlight.dir = vec::normalize(light_dir);
+
+		this->flip_hand = this->pointing_dir.x < 0.0f;
 	}
 
 	/* Compute the shadow masks */
 	this->ambient_light.compute(shadow_edges);
-	this->flash_light.compute(shadow_edges);
+	this->flashlight.compute(shadow_edges);
 
 	ImGui::Begin("Player");
 	ImGui::SetWindowFontScale(1.5f);
@@ -128,12 +162,26 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 void Player::draw(SpriteRenderer& renderer)
 {
 	this->ambient_light.draw();
-	this->flash_light.draw();
+	this->flashlight.draw();
+
+	glm::vec2 draw_pos = this->get_pos() + glm::vec2(0.75f, 1.0f);
 
 	renderer.draw_sprite(
 		this->texture,
-		this->get_pos(),
-		glm::vec2(2.0f, 2.0f), 0);
+		draw_pos + glm::vec2(this->flip_x ? 0.2f : -0.2f, 0.0f),
+		glm::vec2(1.875f, 2.0f), 0, true, this->flip_x, this->frame, this->frames);
+
+	renderer.draw_sprite(
+		this->tool,
+		draw_pos + glm::vec2(this->flip_hand ? -0.875f : 0.875f, -0.5f),
+		glm::vec2(1.25f, 0.75f),
+		atan2(this->pointing_dir.y, this->pointing_dir.x));
+
+	renderer.draw_sprite(
+		this->hand,
+		draw_pos + glm::vec2(this->flip_hand ? -0.875f : 0.875f, -0.5f),
+		glm::vec2(0.5f, 0.5f),
+		atan2(this->pointing_dir.y, this->pointing_dir.x));
 }
 
 void Player::set_cid(int cid)
@@ -144,8 +192,13 @@ void Player::set_cid(int cid)
 void Player::set_projection(glm::mat4 projection)
 {
 	this->projection = projection;
-	this->flash_light.set_projection(projection);
+	this->flashlight.set_projection(projection);
 	this->ambient_light.set_projection(projection);
+}
+
+void Player::set_hp(float hp)
+{
+	Player::hp = hp;
 }
 
 bool Player::light_range_check(Ghost& ghost)
@@ -156,7 +209,7 @@ bool Player::light_range_check(Ghost& ghost)
 
 	float light_angle = glm::radians(flashlight_angle / 2.0f);
 	
-	if (vec::dist(center, ghost.get_pos()) >= flashlight_range) {
+	if (vec::dist(center, ghost.get_pos()) >= flashlight.range / 2.0f) {
 		return false;
 	}
 

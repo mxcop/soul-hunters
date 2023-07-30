@@ -17,7 +17,7 @@
 class Player
 {
 public:
-	Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid, bool* keys);
+	Player(glm::vec2 initial_pos, Texture2D texture, Texture2D hand, Texture2D tool, std::optional<int> cid, bool* keys);
 
 	void update(float dt);
 	void fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vector<glm::vec2>& shadow_edges);
@@ -29,6 +29,8 @@ public:
 	/// Set the projection matrix of the player.
 	/// </summary>
 	void set_projection(glm::mat4 projection);
+
+	static void set_hp(float hp);
 
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
 
@@ -44,8 +46,17 @@ private:
 	glm::mat4 projection = {};
 	Collider* collider = nullptr;
 	Texture2D texture;
+	Texture2D hand;
+	Texture2D tool;
 
-	Light flash_light;
+	int frame = 0; 
+	const int frames = 6;
+	float anim_timer = 0.0f;
+	const float anim_delay = 0.1f;
+	bool flip_x = false;
+	bool flip_hand = false;
+
+	Light flashlight;
 	Light ambient_light;
 
 	glm::vec2 initial_pos = {};
@@ -54,4 +65,6 @@ private:
 	bool is_host = true;
 	int cid = 0u;
 	bool* keys = nullptr;
+
+	static float hp;
 };

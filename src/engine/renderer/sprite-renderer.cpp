@@ -14,9 +14,8 @@ SpriteRenderer::~SpriteRenderer()
 	glDeleteVertexArrays(1, &vao);
 }
 
-void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, bool bind_tex, int frame, int frames)
+void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, bool bind_tex, bool flip_x, int frame, int frames)
 {
-
 	// Bind the GL buffers:
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -25,16 +24,19 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	// Compute the model matrix:
 	glm::mat4 model = glm::mat4(1.0f/* Identity matrix */);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
-	model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	// model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
+	model = glm::rotate(model, rotate, glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
+	model = glm::translate(model, -glm::vec3(0.5f, 0.5f, 0.0f));
 
 	// Set the uniforms within the shader:
 	this->shader.use();
 	this->shader.set_mat4("model", model);
-	if (bind_tex) texture.bind();
-
 	this->shader.set_int("frame", frame);
 	this->shader.set_int("frames", frames);
+	this->shader.set_int("flip_x", flip_x);
+	if (bind_tex) texture.bind();
 
 	// Draw the quad with texture.
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

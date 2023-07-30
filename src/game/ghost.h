@@ -21,21 +21,26 @@ public:
     glm::vec2 get_pos() { return this->pos; };
 
     float speed = 3.0f;
+    float max_hp = 5.0f;
     float hp = 5.0f;
     bool is_sucked = false;
 
 private:
     Ghost(glm::vec2 pos, float hp, int id);
 
+    float anim_delay = 0.15f;
+    float anim_timer = 0.0f;
+    int frame = 0;
+    int frames = 6;
+    bool flip_x = false;
+
     static std::vector<Ghost> ghosts;
 
     int id;
     bool is_active = true;
-
+    
     glm::vec2 pos = {};
-    float time = 0.0f;
-    bool move_right;
 
-    void update(Player& player1, Player& player2, float dt);
+    void update(Player* player1, Player* player2, float dt);
     void draw(SpriteRenderer& renderer) const;
 };
