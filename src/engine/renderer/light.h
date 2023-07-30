@@ -47,4 +47,7 @@ public:
 
     glm::vec2 pos = { 0.0f, 0.0f };
     glm::vec2 dir = { 0.0f, 0.0f };
+
+    //glm::vec4 color = { 1.0f, 1.0f, 0.7f, 0.8f };
+    glm::vec4 color = {};
 };

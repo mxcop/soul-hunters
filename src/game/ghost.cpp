@@ -75,13 +75,14 @@ void Ghost::update(Player& player1, Player& player2, float dt)
 	float dist1 = vec::dist(this->pos, player1.get_pos());
 	float dist2 = vec::dist(this->pos, player2.get_pos());
 
-	/*if (dist1 < 0.1f || dist2 < 0.1f) {
-		deactivate(id);
-		return;
-	}*/
+	if (this->hp == 0.0f && player2.light_range_check(*this))
+	{
+		this->speed = speed + dt;
+		glm::vec2 dir = vec::from_to(player2.get_pos(), this->pos);
+		this->pos += dir * (this->speed * dt);
 
-	// TODO: If HP is 0 and 2nd player is sucking, then deactivate
-	if (this->hp == 0.0f && player2.light_range_check(*this)) this->deactivate(id);
+		if (this->pos == player2.get_pos()) this->deactivate(id);
+	}
 
 	glm::vec2 dir = vec::from_to(dist1 < dist2 ? player1.get_pos() : player2.get_pos(), this->pos);
 	//glm::vec2 side = move_right ? glm::vec2(-dir.y, dir.x) : glm::vec2(dir.y, -dir.x);

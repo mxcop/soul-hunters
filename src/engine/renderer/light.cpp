@@ -111,7 +111,8 @@ void Light::draw()
 
 	/* Draw the light with respect to the shadow mask */
 	this->shader.use();
-	this->shader.set_vec4f("color", { 1.0f, 1.0f, 0.7f, 0.8f });
+	//this->shader.set_vec4f("color", { 1.0f, 1.0f, 0.7f, 0.8f });
+	this->shader.set_vec4f("color", this->color);
 	this->shader.set_mat4("model", model);
 	this->shader.set_vec2f("dir", dir);
 	this->shader.set_vec2f("angle", { angle / 2.0f * 0.0174532925f, -angle / 2.0f * 0.0174532925f });

@@ -11,12 +11,15 @@ Player::Player(glm::vec2 initial_pos, Texture2D texture, std::optional<int> cid,
 	{
 		this->is_host = false;
 		this->cid = cid.value();
+		this->flash_light = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
+		this->flash_light.color = {0.0f, 0.0f, 0.0f, 0.4f};
 	}
 	this->keys = keys;
 
 	this->collider = &Collider::make(this->initial_pos, {2.0f, 2.0f});
 
 	this->flash_light = Light({ 0.0f, 0.0f }, flashlight_range * 2.0f, flashlight_angle);
+	this->flash_light.color = { 1.0f, 1.0f, 0.7f, 0.8f };
 	this->ambient_light = Light({ 0.0f, 0.0f }, 10.0f);
 }
 

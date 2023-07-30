@@ -14,8 +14,9 @@ SpriteRenderer::~SpriteRenderer()
 	glDeleteVertexArrays(1, &vao);
 }
 
-void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, bool bind_tex)
+void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, bool bind_tex, int frame, int frames)
 {
+
 	// Bind the GL buffers:
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -31,6 +32,9 @@ void SpriteRenderer::draw_sprite(Texture2D& texture, glm::vec2 position, glm::ve
 	this->shader.use();
 	this->shader.set_mat4("model", model);
 	if (bind_tex) texture.bind();
+
+	this->shader.set_int("frame", frame);
+	this->shader.set_int("frames", frames);
 
 	// Draw the quad with texture.
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
