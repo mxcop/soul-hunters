@@ -2,6 +2,7 @@
 #include "../engine/math/vec.h"
 
 #include "player.h"
+#include "game.h"
 
 std::vector<Ghost> Ghost::ghosts;
 
@@ -39,6 +40,13 @@ void Ghost::draw_all(SpriteRenderer& renderer)
 {
 	for (Ghost& ghost : ghosts) {
 		if (ghost.is_active) ghost.draw(renderer);
+	}
+}
+
+void Ghost::clear()
+{
+	for (Ghost& ghost : ghosts) {
+		if (ghost.is_active) Ghost::deactivate(ghost.id);
 	}
 }
 
@@ -92,10 +100,21 @@ void Ghost::update(Player* player1, Player* player2, float dt)
 
 		if (vec::dist(this->pos, player2->get_pos()) < 0.5f) {
 			this->deactivate(id);
-			Ghost::make({ rand() % 80, rand() % 40 }, 5);
-			Ghost::make({ rand() % 80, rand() % 40 }, 5);
-		}
+			Game::score += 10;
 
+			bool side = rand() % 2;
+
+			if (side) {
+				Ghost::make({ -3.0f, rand() % 36 }, 5);
+				Ghost::make({ 67.0f, rand() % 36 }, 5);
+			} else {
+				Ghost::make({ rand() % 64, -3.0f }, 5);
+				Ghost::make({ rand() % 64, 39.0f }, 5);
+			}
+
+			//Ghost::make({ rand() % 2 * 70.0f - 3.0f, rand() % 2 * 42.0f - 3.0f }, 5);
+			//Ghost::make({ rand() % 2 * 70.0f - 3.0f, rand() % 2 * 42.0f - 3.0f }, 5);
+		}
 		return;
 	}
 	

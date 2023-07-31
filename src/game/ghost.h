@@ -15,6 +15,7 @@ public:
 	static bool make(glm::vec2 pos, float hp);
     static void update_all(Player* player1, Player* player2, float dt);
     static void draw_all(SpriteRenderer& renderer);
+    static void clear();
     static std::vector<Ghost>& get_ghosts() { return ghosts; };
     static bool deactivate(int id);
 

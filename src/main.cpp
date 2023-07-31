@@ -33,9 +33,11 @@ int main(int argc, char* argv[])
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-    glfwWindowHint(GLFW_RESIZABLE, false);
+    glfwWindowHint(GLFW_RESIZABLE, true);
 
-    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Breakout", glfwGetPrimaryMonitor(), nullptr);
     glfwMakeContextCurrent(window);
 
     // Setup Dear ImGui context
@@ -67,11 +69,11 @@ int main(int argc, char* argv[])
 
     // OpenGL configuration
     // --------------------
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glViewport(0, 0, mode->width, mode->height);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    game = new Game(window, SCREEN_WIDTH, SCREEN_HEIGHT);
+    game = new Game(window);
 
     // initialize game
     // ---------------

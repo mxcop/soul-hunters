@@ -13,7 +13,7 @@ enum GameState
 {
 	GAME_ACTIVE,
 	GAME_MENU,
-	GAME_WIN
+	GAME_OVER
 };
 
 class Game
@@ -24,10 +24,11 @@ public:
 
 	bool keys[1024] = { 0 };
 
+	static int score;
 	int width, height;
 
 	// Constructor/Destructor
-	Game(GLFWwindow* gl_window, int width, int height);
+	Game(GLFWwindow* gl_window);
 	~Game();
 
 	/// <summary>
@@ -62,12 +63,24 @@ public:
 
 private:
 	GLFWwindow* gl_window = nullptr;
+
 	Texture2D game_title;
 	Texture2D game_subtext;
+	Texture2D heart;
+	Texture2D digits;
+
+	int heart_frames = 3;
+	int heart_frame = 0;
+
 	SpriteRenderer renderer;
+
 	Player* player_1 = nullptr;
 	Player* player_2 = nullptr;
+
 	glm::mat4 projection = {};
+
+	glm::vec2 camera_size = {};
+	glm::vec2 camera_center = {};
 
 	std::vector<glm::vec2> shadow_edges;
 

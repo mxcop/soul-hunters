@@ -2,6 +2,9 @@
 #include <imgui.h>
 #include "../engine/math/vec.h"
 
+float Player::max_hp = 5.0f;
+float Player::hp = 5.0f;
+
 Player::Player(glm::vec2 initial_pos, Texture2D texture, Texture2D hand, Texture2D tool, std::optional<int> cid, bool* keys)
 {
 	this->initial_pos = initial_pos;
@@ -85,7 +88,7 @@ void Player::update(float dt)
 			// ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
 			ghost.hp = std::max(0.0f, ghost.hp - dt * 1.5f);
 		}
-		if (current_pos == ghost.get_pos()) {
+		if (vec::dist(ghost.get_pos(), this->collider->get_pos()) < 0.2f && ghost.hp > 0.0f) {
 			Player::hp -= 0.5f;
 			ghost.hp = 0.0f;
 		}
@@ -146,17 +149,6 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 	/* Compute the shadow masks */
 	this->ambient_light.compute(shadow_edges);
 	this->flashlight.compute(shadow_edges);
-
-	ImGui::Begin("Player");
-	ImGui::SetWindowFontScale(1.5f);
-	ImGui::Text("Position: %.1f, %.1f", get_pos().x, get_pos().y);
-	ImGui::End();
-
-	std::vector<Ghost>& ghosts = Ghost::get_ghosts();
-	ImGui::Begin("Ghost");
-	ImGui::SetWindowFontScale(2.0f);
-	ImGui::Text("HP: %.1f", ghosts.front().hp);
-	ImGui::End();
 }
 
 void Player::draw(SpriteRenderer& renderer)
@@ -194,11 +186,6 @@ void Player::set_projection(glm::mat4 projection)
 	this->projection = projection;
 	this->flashlight.set_projection(projection);
 	this->ambient_light.set_projection(projection);
-}
-
-void Player::set_hp(float hp)
-{
-	Player::hp = hp;
 }
 
 bool Player::light_range_check(Ghost& ghost)

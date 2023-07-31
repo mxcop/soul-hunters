@@ -30,11 +30,12 @@ public:
 	/// </summary>
 	void set_projection(glm::mat4 projection);
 
-	static void set_hp(float hp);
-
 	glm::vec2 get_pos() { return this->collider->get_pos(); };
 
 	bool light_range_check(Ghost& ghost);
+
+	static float max_hp;
+	static float hp;
 private:
 	const float speed = 10.0f;
 
@@ -65,6 +66,4 @@ private:
 	bool is_host = true;
 	int cid = 0u;
 	bool* keys = nullptr;
-
-	static float hp;
 };
