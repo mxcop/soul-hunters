@@ -48,7 +48,7 @@ void Game::init()
 
 	// Load some level data:
 	ldtk::Project ldtk_project;
-	ldtk_project.loadFromFile("./public/test.ldtk");
+	ldtk_project.loadFromFile("./public/level.ldtk");
 	const auto& world = ldtk_project.getWorld();
 	const auto& level = world.getLevel("Level_0");
 	const auto& layer = level.getLayer("Background");

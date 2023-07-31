@@ -33,9 +33,13 @@ int main(int argc, char* argv[])
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-    glfwWindowHint(GLFW_RESIZABLE, true);
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
     GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Breakout", glfwGetPrimaryMonitor(), nullptr);
     glfwMakeContextCurrent(window);
@@ -102,14 +106,14 @@ int main(int argc, char* argv[])
         {
             frameCounter = 0;
 
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+            //ImGui_ImplOpenGL3_NewFrame();
+            //ImGui_ImplGlfw_NewFrame();
+            //ImGui::NewFrame();
 
-            ImGui::Begin("Debug");
-            ImGui::SetWindowFontScale(1.5f);
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
+            //ImGui::Begin("Debug");
+            //ImGui::SetWindowFontScale(1.5f);
+            //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            //ImGui::End();
 
             // fixed update
             // ------------
@@ -120,9 +124,9 @@ int main(int argc, char* argv[])
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             game->render();
-            ImGui::Render();
+            //ImGui::Render();
 
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
 
