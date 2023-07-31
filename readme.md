@@ -1,4 +1,8 @@
-# C++ Premake Game <sub>`OpenGL & GLFW`</sub>
+# Soul Hunters <sub>`OpenGL & GLFW`</sub>
+You and your friend are trapped in a *haunted castle*.<br>
+With one flashlight and a vacuum cleaner you will fight your way through waves of ghosts.
+
+<br>
 
 ## Cloning
 Make sure to clone using the following command :
