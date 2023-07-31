@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Breakout", glfwGetPrimaryMonitor(), nullptr);
+    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Soul Hunters", glfwGetPrimaryMonitor(), nullptr);
     glfwMakeContextCurrent(window);
 
     // Setup Dear ImGui context
