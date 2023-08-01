@@ -43,14 +43,23 @@ void Player::update(float dt)
 	}
 	else
 	{
-		int axes_count;
-		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+		/* Gamepad inputs */
+		GLFWgamepadstate state;
+		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		{
+			float x = state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+			float y = state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
 
-		vel.x = axes[LEFT_STICK_X];
-		vel.y = -axes[LEFT_STICK_Y];
-		vel *= speed;
+			/* Deadspace of 0.2f */
+			if (std::abs(x) > 0.2f || std::abs(y) > 0.2f) {
+				vel.x = x;
+				vel.y = -y;
+				vel *= speed;
+			}
+		}
 	}
 
+	/* Animations */
 	this->anim_timer += dt;
 
 	if (vel != glm::vec2(0.0f, 0.0f))
@@ -65,6 +74,7 @@ void Player::update(float dt)
 	}
 	else this->frame = 0;
 
+	/* Player dual axis collision */
 	glm::vec2 collision_time = {};
 
 	this->collider->set_vel({ vel.x * dt, 0.0f });
@@ -85,7 +95,6 @@ void Player::update(float dt)
 	{
 		// Check if the ghost is within range of the first player
 		if (light_range_check(ghost) && this->is_host) {
-			// ghost.speed = std::max(0.0f, ghost.speed - dt * 2.0f);
 			ghost.hp = std::max(0.0f, ghost.hp - dt * 1.5f);
 		}
 		if (vec::dist(ghost.get_pos(), this->collider->get_pos()) < 0.2f && ghost.hp > 0.0f) {
@@ -115,13 +124,7 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 	flashlight.pos = this->get_pos() + glm::vec2((this->flip_hand ? -0.875f : 0.875f) + 0.75f, 0.5f);
 	ambient_light.pos = this->get_pos() + glm::vec2(0.75f, 0.75f);
 
-	//int state = glfwGetMouseButton(gl_window, GLFW_MOUSE_BUTTON_LEFT);
-	//if (this->is_host && state == GLFW_PRESS)
-	//{
-	//	flashlight.range = flashlight_range * 4.0f;
-	//	flashlight.angle = flashlight_angle * 2.0f;
-	//}
-
+	/* Aim the flashlight */
 	if (is_host) {
 		double mousex, mousey;
 		glfwGetCursorPos(gl_window, &mousex, &mousey);
@@ -136,14 +139,20 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 	}
 	else 
 	{
-		int axes_count;
-		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+		/* Gamepad inputs */
+		GLFWgamepadstate state;
+		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		{
+			float x = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
+			float y = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
 
-		glm::vec2 light_dir = { axes[RIGHT_STICK_X], -axes[RIGHT_STICK_Y] };
-
-		this->pointing_dir = flashlight.dir = vec::normalize(light_dir);
-
-		this->flip_hand = this->pointing_dir.x < 0.0f;
+			/* Deadspace of 0.2f */
+			if (std::abs(x) > 0.2f || std::abs(y) > 0.2f) {
+				glm::vec2 light_dir = { x, -y };
+				this->pointing_dir = flashlight.dir = vec::normalize(light_dir);
+				this->flip_hand = this->pointing_dir.x < 0.0f;
+			}
+		}
 	}
 
 	/* Compute the shadow masks */
