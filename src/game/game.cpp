@@ -159,6 +159,8 @@ void Game::joystick_callback(int jid, int event)
 			int new_jid = this->joysticks[0];
 
 			player_2->set_cid(new_jid);
+		} else {
+			player_2->set_cid(-1);
 		}
 	}
 }
