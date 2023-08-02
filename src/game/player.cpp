@@ -41,11 +41,11 @@ void Player::update(float dt)
 		if (this->keys[GLFW_KEY_A]) vel.x -= speed;
 		if (this->keys[GLFW_KEY_D]) vel.x += speed;
 	}
-	else
+	else if (cid != -1)
 	{
 		/* Gamepad inputs */
 		GLFWgamepadstate state;
-		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		if (glfwGetGamepadState(cid, &state))
 		{
 			float x = state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
 			float y = state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
@@ -137,11 +137,11 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 
 		this->flip_hand = mouse_dir.x < 0.0f;
 	}
-	else 
+	else if (cid != -1)
 	{
 		/* Gamepad inputs */
 		GLFWgamepadstate state;
-		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		if (glfwGetGamepadState(cid, &state))
 		{
 			float x = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
 			float y = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
@@ -152,6 +152,23 @@ void Player::fixed_update(GLFWwindow* gl_window, int win_w, int win_h, std::vect
 				this->pointing_dir = flashlight.dir = vec::normalize(light_dir);
 				this->flip_hand = this->pointing_dir.x < 0.0f;
 			}
+
+			// TODO: remove debug code
+			ImGui::Begin("Gamepad Debug");
+			ImGui::SetWindowFontScale(1.5f);
+			const char* gamepad = glfwGetGamepadName(cid);
+			ImGui::Text("Name : %s", gamepad);
+			ImGui::Text("Axis Data :");
+			for (size_t i = 0; i < 6; i++)
+			{
+				ImGui::Text("[%d] : %.2f", i, state.axes[i]);
+			}
+			ImGui::Text("Button Data :");
+			for (size_t i = 0; i < 15; i++)
+			{
+				ImGui::Text("[%d] : %s", i, state.buttons[i] ? "true" : "false");
+			}
+			ImGui::End();
 		}
 	}
 

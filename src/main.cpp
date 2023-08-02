@@ -8,7 +8,11 @@
 #include "game/game.h"
 #include "engine/resource-manager.h"
 
+#include <string>
 #include <iostream>
+#include <fstream>
+#include <streambuf>
+#include <filesystem>
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -41,7 +45,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Soul Hunters", glfwGetPrimaryMonitor(), nullptr);
+    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Soul Hunters", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     // Setup Dear ImGui context
@@ -49,7 +53,7 @@ int main(int argc, char* argv[])
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -77,6 +81,11 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    std::ifstream in(std::filesystem::absolute("./public/gamecontrollerdb.txt").string().c_str());
+    std::string contents((std::istreambuf_iterator<char>(in)),
+        std::istreambuf_iterator<char>());
+    glfwUpdateGamepadMappings("");
+
     game = new Game(window);
 
     // initialize game
@@ -91,6 +100,8 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window))
     {
+        //glfwUpdateGamepadMappings(contents.c_str());
+
         // calculate delta time
         // --------------------
         float currentFrame = glfwGetTime();
@@ -106,9 +117,9 @@ int main(int argc, char* argv[])
         {
             frameCounter = 0;
 
-            //ImGui_ImplOpenGL3_NewFrame();
-            //ImGui_ImplGlfw_NewFrame();
-            //ImGui::NewFrame();
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
             //ImGui::Begin("Debug");
             //ImGui::SetWindowFontScale(1.5f);
@@ -124,9 +135,9 @@ int main(int argc, char* argv[])
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             game->render();
-            //ImGui::Render();
+            ImGui::Render();
 
-            //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
 

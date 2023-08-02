@@ -115,6 +115,8 @@ void Game::init()
 	this->player_1->set_projection(this->projection);
 
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == 1) {
+		const char* name = glfwGetJoystickGUID(GLFW_JOYSTICK_1);
+		printf("\r\nController Connected : %s\r\n", name);
 		this->player_2 = new Player(camera_center, ResourceManager::get_texture("player2"), ResourceManager::get_texture("hand"), ResourceManager::get_texture("vacuum"), GLFW_JOYSTICK_1, this->keys);
 		this->player_2->set_projection(this->projection);
 	}
@@ -131,6 +133,10 @@ void Game::joystick_callback(int jid, int event)
 {
 	if (event == GLFW_CONNECTED)
 	{
+		const char* name = glfwGetJoystickName(jid);
+		const char* guid = glfwGetJoystickGUID(jid);
+		printf("\r\n[%d] Controller Connected : %s : %s\r\n", jid, name, guid);
+
 		this->joysticks[this->joystick_count++] = jid;
 		if (this->player_2 != nullptr) {
 			this->player_2->set_cid(jid);
@@ -142,6 +148,9 @@ void Game::joystick_callback(int jid, int event)
 	}
 	else if (event == GLFW_DISCONNECTED)
 	{
+		const char* name = glfwGetJoystickName(jid);
+		printf("\r\n[%d] Controller Disconnected : %s\r\n", jid, name);
+
 		int i;
 
 		for (i = 0; i < this->joystick_count; i++)
@@ -160,6 +169,7 @@ void Game::joystick_callback(int jid, int event)
 
 			player_2->set_cid(new_jid);
 		}
+		else player_2->set_cid(-1);
 	}
 }
 

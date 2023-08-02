@@ -64,6 +64,6 @@ private:
 	glm::vec2 pointing_dir = {};
 
 	bool is_host = true;
-	int cid = 0u;
+	int cid = -1;
 	bool* keys = nullptr;
 };
